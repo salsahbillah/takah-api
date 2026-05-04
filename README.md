@@ -51,12 +51,17 @@ http://localhost:8080
 
 ## 📌 Available Endpoints
 
+---
+
 - POST /api/v1/auth/login
 - GET /api/v1/surat
 - GET /api/v1/surat/:id
 - POST /api/v1/surat
+  
+---
 
 ## 📡 API Spec
+---
 
 ### 🔐 Auth
 
