@@ -1,3 +1,6 @@
+![Go](https://img.shields.io/badge/Go-1.21-blue)
+![Gin](https://img.shields.io/badge/Framework-Gin-green)
+![Status](https://img.shields.io/badge/status-development-yellow)
 # 🚀 Takah API
 
 Backend API sederhana untuk sistem manajemen surat menggunakan Golang (Gin Framework).
@@ -45,6 +48,13 @@ http://localhost:8080
 ```
 
 ---
+
+## 📌 Available Endpoints
+
+- POST /api/v1/auth/login
+- GET /api/v1/surat
+- GET /api/v1/surat/:id
+- POST /api/v1/surat
 
 ## 📡 API Spec
 
