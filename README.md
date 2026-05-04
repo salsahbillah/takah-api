@@ -166,9 +166,11 @@ http://localhost:8080/api/v1/surat
 
 ---
 
-## ⚠️ Notes
+## 🚧 Status
 
-* Data masih menggunakan dummy (hardcoded)
-* Belum terhubung ke database
+Project masih dalam tahap development awal:
+- Basic API sudah dibuat (Auth & Surat)
+- Data masih menggunakan dummy
+- Database belum terintegrasi
 
 ---
