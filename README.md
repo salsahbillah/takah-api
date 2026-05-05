@@ -5,7 +5,7 @@
 
 Backend API sederhana untuk sistem manajemen surat menggunakan Golang (Gin Framework).
 
----
+
 
 ## 📦 Project Structure
 
@@ -21,7 +21,6 @@ takah-api/
 └── README.md
 ```
 
----
 
 ## ⚙️ Configuration
 
@@ -31,7 +30,6 @@ Saat ini project masih menggunakan konfigurasi default:
 * Mode: `debug`
 * Data: masih dummy (belum database)
 
----
 
 ## 🚀 Run Application
 
@@ -46,8 +44,6 @@ Server akan berjalan di:
 ```
 http://localhost:8080
 ```
-
----
 
 ## 📌 Available Endpoints
 
@@ -64,10 +60,8 @@ http://localhost:8080
 - PUT `/api/v1/surat/:id`
 - DELETE `/api/v1/surat/:id`
 
----
 
 ## 📡 API Spec
----
 
 ### 🔐 Auth
 
@@ -94,8 +88,6 @@ http://localhost:8080
 }
 ```
 
----
-
 ### 📄 Surat
 
 #### Get All Surat
@@ -112,8 +104,6 @@ http://localhost:8080
 }
 ```
 
----
-
 #### Get Surat by ID
 
 * Method: `GET`
@@ -124,8 +114,6 @@ http://localhost:8080
 ```
 /api/v1/surat/1
 ```
-
----
 
 #### Create Surat
 
@@ -160,8 +148,6 @@ http://localhost:8080
 }
 ```
 
----
-
 ## 🧪 Testing API
 
 Gunakan Postman atau browser:
@@ -170,13 +156,9 @@ Gunakan Postman atau browser:
 http://localhost:8080/api/v1/surat
 ```
 
----
-
 ## 🚧 Status
 
 Project masih dalam tahap development awal:
 - Basic API sudah dibuat (Auth & Surat)
 - Data masih menggunakan dummy
 - Database belum terintegrasi
-
----
