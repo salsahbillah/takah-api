@@ -51,13 +51,19 @@ http://localhost:8080
 
 ## 📌 Available Endpoints
 
----
+### Health
+- GET `/api/v1/health`
 
-- POST /api/v1/auth/login
-- GET /api/v1/surat
-- GET /api/v1/surat/:id
-- POST /api/v1/surat
-  
+### Auth
+- POST `/api/v1/auth/login`
+
+### Surat
+- GET `/api/v1/surat`
+- POST `/api/v1/surat`
+- GET `/api/v1/surat/:id`
+- PUT `/api/v1/surat/:id`
+- DELETE `/api/v1/surat/:id`
+
 ---
 
 ## 📡 API Spec
