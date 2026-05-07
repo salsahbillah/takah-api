@@ -4,7 +4,10 @@
 
 # 🚀 Takah API
 
+# 🚀 Takah API
+
 Backend REST API sederhana untuk master data Takah (jenis surat) menggunakan Golang dan Gin Framework.
+Project ini dibuat untuk pembelajaran dan pengembangan backend API menggunakan Golang (Gin Framework) dengan implementasi basic CRUD dan routing REST API.
 
 ---
 
@@ -89,7 +92,7 @@ http://localhost:8080
 
 # 📡 API Specification
 
-# 🔐 Auth
+## 🔐 Auth
 
 ## Login
 
