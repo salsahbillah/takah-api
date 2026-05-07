@@ -18,8 +18,17 @@ takah-api/
 │
 ├── internal/
 │   ├── handler/
+│   │   ├── auth_handler.go
+│   │   ├── surat_handler.go
+│   │   └── takah_handler.go
+│   │
 │   ├── model/
+│   │   ├── auth_model.go
+│   │   ├── surat_model.go
+│   │   └── takah_model.go
+│   │
 │   └── route/
+│       └── route.go
 │
 ├── go.mod
 ├── go.sum
