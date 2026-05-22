@@ -24,4 +24,10 @@ func SetupRoutes(router *gin.Engine) {
 	surat.GET("/:id", handler.GetSuratByID)
 	surat.PUT("/:id", handler.UpdateSurat)
 	surat.DELETE("/:id", handler.DeleteSurat)
+	takah := api.Group("/takah")
+	takah.GET("", handler.GetAllTakah)
+	takah.POST("", handler.CreateTakah)
+	takah.GET("/:id", handler.GetTakahByID)
+	takah.PUT("/:id", handler.UpdateTakah)
+	takah.DELETE("/:id", handler.DeleteTakah)
 }
