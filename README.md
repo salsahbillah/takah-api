@@ -4,20 +4,29 @@
 
 # 🚀 Takah API
 
-# 🚀 Takah API
+Backend REST API sederhana untuk master data Takah menggunakan Golang dan Gin Framework.
 
-Backend REST API sederhana untuk master data Takah (jenis surat) menggunakan Golang dan Gin Framework.
-Project ini dibuat untuk pembelajaran dan pengembangan backend API menggunakan Golang (Gin Framework) dengan implementasi basic CRUD dan routing REST API.
+Project ini dibuat untuk pembelajaran dan pengembangan backend API dengan implementasi basic CRUD, routing REST API, dan dokumentasi teknis awal.
 
 ---
 
-# 📦 Project Structure
+## 📦 Project Structure
 
 ```bash
 takah-api/
 ├── cmd/
 │   └── web/
 │       └── main.go
+│
+├── docs/
+│   ├── api-testing.md
+│   ├── backend.md
+│   ├── database-design.md
+│   ├── flow-system.md
+│   ├── integration.md
+│   ├── sop-admin.md
+│   ├── sop-user.md
+│   └── task-list.md
 │
 ├── internal/
 │   ├── handler/
@@ -40,19 +49,18 @@ takah-api/
 
 ---
 
-# ⚙️ Configuration
+## ⚙️ Configuration
 
 Saat ini project masih menggunakan konfigurasi default:
 
 - Port: `8080`
 - Mode: `debug`
-- Data: dummy data (belum database)
+- Data: dummy data
+- Database: belum terintegrasi
 
 ---
 
-# 🚀 Run Application
-
-## ▶️ Run server
+## 🚀 Run Application
 
 ```bash
 go run cmd/web/main.go
@@ -66,22 +74,22 @@ http://localhost:8080
 
 ---
 
-# 📌 Available Endpoints
+## 📌 Available Endpoints
 
-## Health
+### Health
 - GET `/api/v1/health`
 
-## Auth
+### Auth
 - POST `/api/v1/auth/login`
 
-## Master Takah
+### Master Takah
 - GET `/api/v1/takah`
 - GET `/api/v1/takah/:id`
 - POST `/api/v1/takah`
 - PUT `/api/v1/takah/:id`
 - DELETE `/api/v1/takah/:id`
 
-## Surat
+### Surat
 - GET `/api/v1/surat`
 - GET `/api/v1/surat/:id`
 - POST `/api/v1/surat`
@@ -90,16 +98,13 @@ http://localhost:8080
 
 ---
 
-# 📡 API Specification
+## 📡 API Example
 
-## 🔐 Auth
+### Login
 
-## Login
+**POST** `/api/v1/auth/login`
 
-- Method: `POST`
-- Endpoint: `/api/v1/auth/login`
-
-### Request
+Request:
 
 ```json
 {
@@ -108,54 +113,24 @@ http://localhost:8080
 }
 ```
 
-### Response
+Response:
 
 ```json
 {
   "message": "Login berhasil",
-  "token": "dummy-token"
+  "data": {
+    "token": "dummy-token"
+  }
 }
 ```
 
 ---
 
-# 📂 Master Takah API
+### Create Master Takah
 
-## 📄 Get All Takah
+**POST** `/api/v1/takah`
 
-- Method: `GET`
-- Endpoint: `/api/v1/takah`
-
-### Response
-
-```json
-{
-  "message": "Data takah berhasil diambil",
-  "data": []
-}
-```
-
----
-
-## 🔍 Get Takah By ID
-
-- Method: `GET`
-- Endpoint: `/api/v1/takah/:id`
-
-### Example
-
-```bash
-/api/v1/takah/1
-```
-
----
-
-## ➕ Create Takah
-
-- Method: `POST`
-- Endpoint: `/api/v1/takah`
-
-### Request
+Request:
 
 ```json
 {
@@ -166,118 +141,43 @@ http://localhost:8080
 }
 ```
 
-### Response
+Response:
 
 ```json
 {
   "message": "Data takah berhasil dibuat",
   "data": {
-    "id": 1,
+    "id": 3,
     "code": "UND",
     "name": "Surat Undangan",
     "description": "Jenis surat undangan",
-    "order": 1
+    "order": 1,
+    "created_by": "Admin",
+    "created_time": "2026-05-04 15:00",
+    "updated_by": "Admin",
+    "updated_time": "2026-05-04 15:00"
   }
 }
 ```
 
 ---
 
-## ✏️ Update Takah
+## 📚 Documentation
 
-- Method: `PUT`
-- Endpoint: `/api/v1/takah/:id`
+Dokumentasi teknis tersedia pada folder `docs/`:
 
-### Request
-
-```json
-{
-  "code": "SKET",
-  "name": "Surat Keterangan",
-  "description": "Update data takah",
-  "order": 2
-}
-```
-
-### Response
-
-```json
-{
-  "message": "Data takah berhasil diupdate"
-}
-```
+- [Technical Backend](./docs/backend.md)
+- [Flow System](./docs/flow-system.md)
+- [Database Design](./docs/database-design.md)
+- [Integration Documentation](./docs/integration.md)
+- [API Testing](./docs/api-testing.md)
+- [SOP Admin](./docs/sop-admin.md)
+- [SOP User](./docs/sop-user.md)
+- [Task List & Roadmap](./docs/task-list.md)
 
 ---
 
-## ❌ Delete Takah
-
-- Method: `DELETE`
-- Endpoint: `/api/v1/takah/:id`
-
-### Response
-
-```json
-{
-  "message": "Data takah berhasil dihapus"
-}
-```
-
----
-
-# 📄 Surat API
-
-## 📄 Get All Surat
-
-- Method: `GET`
-- Endpoint: `/api/v1/surat`
-
-### Response
-
-```json
-{
-  "message": "success",
-  "data": []
-}
-```
-
----
-
-## ➕ Create Surat
-
-- Method: `POST`
-- Endpoint: `/api/v1/surat`
-
-### Request
-
-```json
-{
-  "nomor_surat": "003/ADM/2026",
-  "judul": "Surat Permohonan Data",
-  "pengirim": "Administrasi",
-  "penerima": "HRD",
-  "status": "draft"
-}
-```
-
-### Response
-
-```json
-{
-  "message": "Data surat berhasil dibuat",
-  "data": {
-    "id": 3,
-    "nomor_surat": "003/ADM/2026",
-    "judul": "Surat Permohonan Data",
-    "pengirim": "Administrasi",
-    "penerima": "HRD",
-    "status": "draft"
-  }
-}
-```
-
----
-
-# 🧪 API Testing
+## 🧪 API Testing
 
 Gunakan Postman atau browser:
 
@@ -285,7 +185,7 @@ Gunakan Postman atau browser:
 http://localhost:8080/api/v1/takah
 ```
 
-atau
+atau:
 
 ```bash
 http://localhost:8080/api/v1/surat
@@ -293,7 +193,7 @@ http://localhost:8080/api/v1/surat
 
 ---
 
-# 🚧 Development Status
+## 🚧 Development Status
 
 Project masih dalam tahap development awal:
 
@@ -301,4 +201,6 @@ Project masih dalam tahap development awal:
 - ✅ CRUD Master Takah API
 - ✅ CRUD Surat API
 - ✅ REST API routing dengan Gin
+- ✅ Technical documentation
 - ❌ Belum menggunakan database
+- ❌ Belum menggunakan JWT authentication
