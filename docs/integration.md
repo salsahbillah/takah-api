@@ -21,6 +21,8 @@ Config Nomor Surat
 ↓
 Surat Keluar
 ↓
+Approval Surat
+↓
 Monitoring Surat
 ```
 
@@ -31,16 +33,19 @@ Monitoring Surat
 Master Takah digunakan sebagai data master jenis surat.
 
 Contoh:
-- SKET
-- SKK
-- UND
-- SP
+
+* SKET
+* SKK
+* UND
+* SP
 
 Master Takah digunakan oleh:
-- Template Surat
-- Generate Nomor Surat
-- Surat Keluar
-- Monitoring Surat
+
+* Template Surat
+* Generate Nomor Surat
+* Surat Keluar
+* Monitoring Surat
+* Approval Surat
 
 ---
 
@@ -61,8 +66,9 @@ Surat dibuat
 ```
 
 Contoh:
-- Surat Undangan menggunakan template UND
-- Surat Keterangan menggunakan template SKET
+
+* Surat Undangan menggunakan template UND
+* Surat Keterangan menggunakan template SKET
 
 ---
 
@@ -95,9 +101,10 @@ Contoh:
 # 4. Surat Keluar Integration
 
 Surat keluar menggunakan:
-- Master Takah
-- Template Surat
-- Config Nomor Surat
+
+* Master Takah
+* Template Surat
+* Config Nomor Surat
 
 Flow:
 
@@ -110,23 +117,59 @@ Pilih template surat
 ↓
 Generate nomor surat
 ↓
-Simpan surat
+Simpan surat sebagai draft
+↓
+Kirim surat untuk approval
+↓
+Approver melakukan review
+↓
+Approve / reject surat
 ↓
 Monitoring surat
 ```
 
 ---
 
-# 5. Monitoring Surat Integration
+# 5. Approval Surat Integration
+
+Approval surat digunakan untuk proses review dan persetujuan surat sebelum surat dinyatakan selesai.
+
+Flow:
+
+```text
+User membuat surat
+↓
+Surat masuk ke approval
+↓
+Approver melakukan review
+↓
+Approve / reject surat
+↓
+Status surat diperbarui
+↓
+Riwayat approval tersimpan
+```
+
+Tujuan:
+
+* Mengetahui siapa yang melakukan review surat
+* Mengetahui status approval surat
+* Menyimpan riwayat approval surat
+* Monitoring proses surat
+
+---
+
+# 6. Monitoring Surat Integration
 
 Monitoring surat digunakan untuk tracking status surat.
 
 Status:
-- draft
-- pending
-- approved
-- rejected
-- completed
+
+* draft
+* pending
+* approved
+* rejected
+* completed
 
 Flow:
 
@@ -135,11 +178,15 @@ Surat dibuat
 ↓
 Status draft
 ↓
-Surat diproses
+Surat dikirim untuk approval
 ↓
-Status berubah
+Approver melakukan review
 ↓
-Riwayat monitoring tersimpan
+Status approval berubah
+↓
+Riwayat approval tersimpan
+↓
+Monitoring surat diperbarui
 ```
 
 ---
@@ -149,17 +196,22 @@ Riwayat monitoring tersimpan
 Authentication digunakan untuk membatasi akses user.
 
 Role plan:
-- admin
-- user
+
+* admin
+* user
 
 Admin:
-- Manage master data
-- Monitoring semua surat
-- Approval surat
+
+* Manage master data
+* Monitoring semua surat
+* Approval surat
+* Review surat
 
 User:
-- Membuat surat
-- Melihat surat sendiri
+
+* Membuat surat
+* Melihat surat sendiri
+* Monitoring status approval surat
 
 ---
 
@@ -167,39 +219,42 @@ User:
 
 Database yang direncanakan:
 
-| Table | Purpose |
-| --- | --- |
-| users | Data user |
-| master_takah | Jenis surat |
-| template_surat | Template surat |
-| config_nomor_surat | Config penomoran |
-| surat_keluar | Data surat keluar |
-| surat_masuk | Data surat masuk |
-| monitoring_surat | Monitoring status surat |
+| Table              | Purpose                 |
+| ------------------ | ----------------------- |
+| users              | Data user               |
+| master_takah       | Jenis surat             |
+| template_surat     | Template surat          |
+| config_nomor_surat | Config penomoran        |
+| surat_keluar       | Data surat keluar       |
+| approval_surat     | Data approval surat     |
+| surat_masuk        | Data surat masuk        |
+| monitoring_surat   | Monitoring status surat |
 
 ---
 
 # Current Integration Status
 
-| Module | Status | Notes |
-| --- | --- | --- |
-| Master Takah | Partial | CRUD dummy tersedia |
-| Surat | Partial | CRUD dummy tersedia |
-| Authentication | Partial | Dummy login |
-| Database | Todo | Belum terintegrasi |
-| Generate nomor surat | Todo | Belum dibuat |
-| Monitoring surat | Todo | Belum dibuat |
+| Module               | Status  | Notes               |
+| -------------------- | ------- | ------------------- |
+| Master Takah         | Partial | CRUD dummy tersedia |
+| Surat                | Partial | CRUD dummy tersedia |
+| Authentication       | Partial | Dummy login         |
+| Approval surat       | Todo    | Planned             |
+| Database             | Todo    | Belum terintegrasi  |
+| Generate nomor surat | Todo    | Belum dibuat        |
+| Monitoring surat     | Todo    | Belum dibuat        |
 
 ---
 
 # Future Integration Plan
 
 Pengembangan integrasi selanjutnya:
-- JWT authentication
-- MySQL integration
-- Upload file surat
-- Export PDF
-- Approval surat
-- Notification system
-- Audit log
-- Dashboard monitoring
+
+* JWT authentication
+* MySQL integration
+* Upload file surat
+* Export PDF
+* Approval multi level
+* Notification system
+* Audit log
+* Dashboard monitoring
