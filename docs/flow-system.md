@@ -9,12 +9,14 @@ Dokumen ini menjelaskan gambaran sistem dan alur utama aplikasi Takah.
 Takah API dibuat untuk membantu proses administrasi surat menyurat secara digital di lingkungan perusahaan atau instansi.
 
 Sistem ini dirancang untuk:
-- Mengelola master jenis surat.
-- Membantu pembuatan surat keluar.
-- Membantu pencatatan surat masuk.
-- Membuat nomor surat otomatis.
-- Menyimpan arsip surat secara digital.
-- Mempermudah monitoring status surat.
+
+* Mengelola master jenis surat.
+* Membantu pembuatan surat keluar.
+* Membantu pencatatan surat masuk.
+* Membuat nomor surat otomatis.
+* Menyimpan arsip surat secara digital.
+* Mempermudah monitoring status surat.
+* Membantu proses approval dan review surat.
 
 ---
 
@@ -25,18 +27,20 @@ Sistem ini dirancang untuk:
 Master Takah digunakan untuk menyimpan data jenis surat yang digunakan dalam sistem.
 
 Contoh data:
-- SKET → Surat Keterangan
-- SKK → Surat Keterangan Kerja
-- SP → Surat Peringatan
-- UND → Surat Undangan
-- MEM → Memorandum
-- ND → Nota Dinas
+
+* SKET → Surat Keterangan
+* SKK → Surat Keterangan Kerja
+* SP → Surat Peringatan
+* UND → Surat Undangan
+* MEM → Memorandum
+* ND → Nota Dinas
 
 Fungsi:
-- Digunakan pada pembuatan surat.
-- Digunakan untuk generate nomor surat.
-- Digunakan untuk template surat.
-- Digunakan untuk monitoring dan reporting.
+
+* Digunakan pada pembuatan surat.
+* Digunakan untuk generate nomor surat.
+* Digunakan untuk template surat.
+* Digunakan untuk monitoring dan reporting.
 
 ---
 
@@ -51,14 +55,16 @@ Contoh format:
 ```
 
 Keterangan:
-- `001` → nomor urut surat
-- `UND` → kode surat dari Master Takah
-- `CBN` → kode perusahaan/divisi
-- `052026` → bulan dan tahun
+
+* `001` → nomor urut surat
+* `UND` → kode surat dari Master Takah
+* `CBN` → kode perusahaan/divisi
+* `052026` → bulan dan tahun
 
 Aturan:
-- Nomor surat otomatis bertambah.
-- Nomor reset setiap bulan dan tahun.
+
+* Nomor surat otomatis bertambah.
+* Nomor reset setiap bulan dan tahun.
 
 Contoh:
 
@@ -75,14 +81,16 @@ Contoh:
 Template surat digunakan untuk menyimpan format isi surat berdasarkan jenis surat.
 
 Contoh:
-- Template Surat Undangan
-- Template Surat Keterangan
-- Template Surat Peringatan
+
+* Template Surat Undangan
+* Template Surat Keterangan
+* Template Surat Peringatan
 
 Tujuan:
-- Mempermudah pembuatan surat.
-- Mengurangi penulisan manual.
-- Menjaga format surat tetap konsisten.
+
+* Mempermudah pembuatan surat.
+* Mengurangi penulisan manual.
+* Menjaga format surat tetap konsisten.
 
 ---
 
@@ -91,13 +99,14 @@ Tujuan:
 Surat keluar digunakan untuk membuat dan menyimpan surat yang dikirim keluar perusahaan atau instansi.
 
 Data utama:
-- Nomor surat
-- Jenis surat
-- Tujuan surat
-- Perihal
-- Lampiran
-- Tanggal surat
-- File surat
+
+* Nomor surat
+* Jenis surat
+* Tujuan surat
+* Perihal
+* Lampiran
+* Tanggal surat
+* File surat
 
 Flow:
 
@@ -112,7 +121,17 @@ User mengisi parameter surat
 ↓
 Sistem generate nomor surat otomatis
 ↓
-Surat disimpan
+Surat disimpan sebagai draft
+↓
+User mengirim surat untuk approval
+↓
+Admin / approver melakukan review surat
+↓
+Approve / reject surat
+↓
+Status surat berubah
+↓
+Riwayat approval tersimpan
 ↓
 Surat masuk ke monitoring surat
 ```
@@ -124,16 +143,18 @@ Surat masuk ke monitoring surat
 Surat masuk digunakan untuk mencatat surat yang diterima dari pihak luar.
 
 Data utama:
-- Nomor surat
-- Pengirim
-- Tanggal surat
-- Perihal
-- File surat
+
+* Nomor surat
+* Pengirim
+* Tanggal surat
+* Perihal
+* File surat
 
 Fungsi:
-- Arsip digital surat masuk.
-- Monitoring surat masuk.
-- Riwayat surat masuk.
+
+* Arsip digital surat masuk.
+* Monitoring surat masuk.
+* Riwayat surat masuk.
 
 ---
 
@@ -142,11 +163,22 @@ Fungsi:
 Monitoring surat digunakan untuk melihat status dan riwayat surat.
 
 Contoh status:
-- draft
-- pending
-- approved
-- rejected
-- completed
+
+* draft
+* pending
+* approved
+* rejected
+* completed
+
+Monitoring surat juga digunakan untuk melihat proses approval surat dan riwayat review surat.
+
+Informasi monitoring:
+
+* Status surat
+* Riwayat approval
+* User approver
+* Waktu approval
+* Catatan approval
 
 Flow monitoring:
 
@@ -155,11 +187,15 @@ Surat dibuat
 ↓
 Status draft
 ↓
-Surat diproses
+Surat dikirim untuk approval
 ↓
-Status berubah
+Approver melakukan review
 ↓
-Riwayat surat tersimpan
+Status approval berubah
+↓
+Riwayat approval tersimpan
+↓
+Monitoring surat diperbarui
 ```
 
 ---
@@ -169,31 +205,24 @@ Riwayat surat tersimpan
 ## Admin
 
 Admin memiliki akses:
-- Mengelola Master Takah
-- Mengelola template surat
-- Mengelola config nomor surat
-- Monitoring seluruh surat
-- Approve surat
+
+* Mengelola Master Takah
+* Mengelola template surat
+* Mengelola config nomor surat
+* Monitoring seluruh surat
+* Approve surat
+* Review surat
+* Melihat riwayat approval surat
 
 ---
 
 ## User / Staff
 
 User memiliki akses:
-- Membuat surat
-- Melihat surat
-- Monitoring status surat sendiri
+
+* Membuat surat
+* Melihat surat
+* Monitoring status surat sendiri
+* Melihat status approval surat
 
 ---
-
-# Future Development
-
-Fitur yang dapat dikembangkan selanjutnya:
-- Database integration
-- JWT authentication
-- Upload file PDF
-- Digital signature
-- Export PDF
-- Dashboard reporting
-- Email notification
-- Disposisi surat
