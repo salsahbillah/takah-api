@@ -48,16 +48,28 @@ Fungsi:
 
 Config nomor surat digunakan untuk menentukan format penomoran surat otomatis.
 
-Contoh format:
+Config nomor surat memiliki relasi dengan Master Takah.
+
+Setiap jenis surat pada Master Takah dapat memiliki format nomor surat yang berbeda sesuai kebutuhan perusahaan atau instansi.
+
+Contoh:
+
+* Surat Undangan (UND)
 
 ```text
 001/UND/CBN/052026
 ```
 
+* Surat Keterangan (SKET)
+
+```text
+001/SKET/CBN/052026
+```
+
 Keterangan:
 
 * `001` → nomor urut surat
-* `UND` → kode surat dari Master Takah
+* `UND` / `SKET` → kode surat dari Master Takah
 * `CBN` → kode perusahaan/divisi
 * `052026` → bulan dan tahun
 
@@ -65,15 +77,15 @@ Aturan:
 
 * Nomor surat otomatis bertambah.
 * Nomor reset setiap bulan dan tahun.
+* Format nomor surat dapat berbeda untuk setiap jenis surat.
 
 Contoh:
 
 ```text
 001/UND/CBN/042026
 002/UND/CBN/042026
-001/UND/CBN/052026
+001/SKET/CBN/052026
 ```
-
 ---
 
 ## 3. Template Surat

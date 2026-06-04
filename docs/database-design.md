@@ -67,19 +67,22 @@ Contoh:
 
 Digunakan untuk konfigurasi format nomor surat otomatis.
 
+Setiap konfigurasi nomor surat memiliki relasi dengan Master Takah sehingga setiap jenis surat dapat menggunakan format nomor yang berbeda.
+
 Contoh format:
 
-```text id="u3q4sv"
+```text
 001/UND/CBN/052026
 ```
 
-| Field         | Type      | Notes            |
-| ------------- | --------- | ---------------- |
-| id            | bigint    | Primary key      |
-| company_code  | varchar   | Kode perusahaan  |
-| division_code | varchar   | Kode divisi      |
-| reset_type    | varchar   | monthly / yearly |
-| created_at    | timestamp | Waktu dibuat     |
+| Field         | Type      | Notes               |
+| ------------- | --------- | ------------------- |
+| id            | bigint    | Primary key         |
+| takah_id      | bigint    | Relasi master_takah |
+| company_code  | varchar   | Kode perusahaan     |
+| division_code | varchar   | Kode divisi         |
+| reset_type    | varchar   | monthly / yearly    |
+| created_at    | timestamp | Waktu dibuat        |
 
 ---
 
@@ -170,10 +173,12 @@ Digunakan untuk monitoring status surat.
 
 # Table Relationship
 
-```text id="y2e5l4"
+```text
 master_takah
 │
 ├── template_surat
+│
+├── config_nomor_surat
 │
 └── surat_keluar
     │
@@ -185,11 +190,13 @@ master_takah
 Relationship:
 
 * `template_surat.takah_id` → `master_takah.id`
+* `config_nomor_surat.takah_id` → `master_takah.id`
 * `surat_keluar.takah_id` → `master_takah.id`
 * `approval_surat.surat_keluar_id` → `surat_keluar.id`
 * `monitoring_surat.surat_keluar_id` → `surat_keluar.id`
 
 ---
+
 
 # Generate Nomor Surat
 

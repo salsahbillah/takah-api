@@ -76,14 +76,18 @@ Contoh:
 
 Config nomor surat digunakan untuk generate nomor otomatis.
 
+Config nomor surat memiliki relasi dengan Master Takah.
+
+Setiap jenis surat pada Master Takah dapat memiliki format nomor surat yang berbeda sesuai kebutuhan perusahaan atau instansi.
+
 Flow:
 
 ```text
 User membuat surat
 ↓
-Sistem membaca config nomor surat
+Sistem membaca jenis surat dari Master Takah
 ↓
-Sistem membaca kode surat dari Master Takah
+Sistem membaca config nomor surat berdasarkan jenis surat
 ↓
 Sistem generate nomor otomatis
 ↓
@@ -94,6 +98,7 @@ Contoh:
 
 ```text
 001/UND/CBN/052026
+001/SKET/CBN/052026
 ```
 
 ---
