@@ -41,6 +41,7 @@ Fungsi:
 * Digunakan untuk generate nomor surat.
 * Digunakan untuk template surat.
 * Digunakan untuk monitoring dan reporting.
+* Digunakan sebagai relasi pada config nomor surat.
 
 ---
 
@@ -51,6 +52,8 @@ Config nomor surat digunakan untuk menentukan format penomoran surat otomatis.
 Config nomor surat memiliki relasi dengan Master Takah.
 
 Setiap jenis surat pada Master Takah dapat memiliki format nomor surat yang berbeda sesuai kebutuhan perusahaan atau instansi.
+
+Reset nomor surat juga dapat dibuat berdasarkan config, sehingga setiap jenis surat dapat memiliki aturan reset yang berbeda.
 
 Contoh:
 
@@ -76,16 +79,26 @@ Keterangan:
 Aturan:
 
 * Nomor surat otomatis bertambah.
-* Nomor reset setiap bulan dan tahun.
 * Format nomor surat dapat berbeda untuk setiap jenis surat.
+* Reset nomor surat mengikuti config yang digunakan.
+* Reset nomor surat dapat dibuat per bulan atau per tahun.
 
-Contoh:
+Contoh reset bulanan:
 
 ```text
-001/UND/CBN/042026
-002/UND/CBN/042026
-001/SKET/CBN/052026
+001/UND/CBN/052026
+002/UND/CBN/052026
+001/UND/CBN/062026
 ```
+
+Contoh reset tahunan:
+
+```text
+001/SKET/CBN/2026
+002/SKET/CBN/2026
+001/SKET/CBN/2027
+```
+
 ---
 
 ## 3. Template Surat
@@ -131,6 +144,8 @@ User memilih template surat
 ↓
 User mengisi parameter surat
 ↓
+Sistem membaca config nomor surat berdasarkan jenis surat
+↓
 Sistem generate nomor surat otomatis
 ↓
 Surat disimpan sebagai draft
@@ -152,7 +167,7 @@ Surat masuk ke monitoring surat
 
 ## 5. Surat Masuk
 
-Surat masuk digunakan untuk mencatat surat yang diterima dari pihak luar.
+Surat masuk digunakan untuk mencatat surat yang diterima dari pihak luar perusahaan atau instansi.
 
 Data utama:
 
@@ -161,12 +176,31 @@ Data utama:
 * Tanggal surat
 * Perihal
 * File surat
+* Penerima surat
+* Keterangan
 
 Fungsi:
 
 * Arsip digital surat masuk.
 * Monitoring surat masuk.
 * Riwayat surat masuk.
+* Mempermudah pencarian surat yang diterima.
+
+Flow:
+
+```text
+Admin / user menerima surat dari pihak luar
+↓
+Admin / user input data surat masuk
+↓
+Admin / user upload file surat
+↓
+Surat masuk disimpan
+↓
+Surat masuk tercatat pada sistem
+↓
+Surat masuk masuk ke monitoring surat
+```
 
 ---
 
@@ -181,8 +215,9 @@ Contoh status:
 * approved
 * rejected
 * completed
+* received
 
-Monitoring surat juga digunakan untuk melihat proses approval surat dan riwayat review surat.
+Monitoring surat juga digunakan untuk melihat proses approval surat, riwayat review surat, dan riwayat surat masuk.
 
 Informasi monitoring:
 
@@ -191,8 +226,9 @@ Informasi monitoring:
 * User approver
 * Waktu approval
 * Catatan approval
+* Riwayat surat masuk
 
-Flow monitoring:
+Flow monitoring surat keluar:
 
 ```text
 Surat dibuat
@@ -210,6 +246,22 @@ Riwayat approval tersimpan
 Monitoring surat diperbarui
 ```
 
+Flow monitoring surat masuk:
+
+```text
+Surat diterima
+↓
+Data surat masuk dicatat
+↓
+File surat disimpan
+↓
+Status received
+↓
+Riwayat surat masuk tersimpan
+↓
+Monitoring surat diperbarui
+```
+
 ---
 
 # User Role
@@ -221,10 +273,12 @@ Admin memiliki akses:
 * Mengelola Master Takah
 * Mengelola template surat
 * Mengelola config nomor surat
+* Mengelola surat masuk
 * Monitoring seluruh surat
 * Approve surat
 * Review surat
 * Melihat riwayat approval surat
+* Melihat riwayat surat masuk
 
 ---
 
@@ -234,7 +288,9 @@ User memiliki akses:
 
 * Membuat surat
 * Melihat surat
+* Mencatat surat masuk
 * Monitoring status surat sendiri
 * Melihat status approval surat
+* Melihat riwayat surat masuk
 
 ---

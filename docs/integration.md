@@ -24,8 +24,11 @@ Surat Keluar
 Approval Surat
 ↓
 Monitoring Surat
-```
 
+Surat Masuk
+↓
+Monitoring Surat
+```
 ---
 
 # 1. Master Takah Integration
@@ -80,6 +83,8 @@ Config nomor surat memiliki relasi dengan Master Takah.
 
 Setiap jenis surat pada Master Takah dapat memiliki format nomor surat yang berbeda sesuai kebutuhan perusahaan atau instansi.
 
+Config nomor surat juga digunakan untuk menentukan aturan reset nomor surat.
+
 Flow:
 
 ```text
@@ -88,6 +93,8 @@ User membuat surat
 Sistem membaca jenis surat dari Master Takah
 ↓
 Sistem membaca config nomor surat berdasarkan jenis surat
+↓
+Sistem membaca aturan reset nomor surat
 ↓
 Sistem generate nomor otomatis
 ↓
@@ -100,6 +107,11 @@ Contoh:
 001/UND/CBN/052026
 001/SKET/CBN/052026
 ```
+
+Aturan reset:
+
+* monthly → reset setiap bulan
+* yearly → reset setiap tahun
 
 ---
 
@@ -164,11 +176,37 @@ Tujuan:
 
 ---
 
-# 6. Monitoring Surat Integration
+# 6. Surat Masuk Integration
 
-Monitoring surat digunakan untuk tracking status surat.
+Surat masuk digunakan untuk mencatat surat yang diterima dari pihak luar perusahaan atau instansi.
 
-Status:
+Flow:
+
+```text
+Surat diterima dari pihak luar
+↓
+User / admin input data surat masuk
+↓
+Upload file surat
+↓
+Data surat masuk disimpan
+↓
+Monitoring surat masuk
+```
+
+Tujuan:
+
+* Menyimpan arsip surat masuk secara digital
+* Mempermudah pencarian surat masuk
+* Menyimpan riwayat surat yang diterima
+* Monitoring surat masuk
+---
+
+# 7. Monitoring Surat Integration
+
+Monitoring surat digunakan untuk tracking status surat keluar dan surat masuk.
+
+Status surat keluar:
 
 * draft
 * pending
@@ -176,7 +214,12 @@ Status:
 * rejected
 * completed
 
-Flow:
+Status surat masuk:
+
+* received
+* completed
+
+Flow surat keluar:
 
 ```text
 Surat dibuat
@@ -190,6 +233,20 @@ Approver melakukan review
 Status approval berubah
 ↓
 Riwayat approval tersimpan
+↓
+Monitoring surat diperbarui
+```
+
+Flow surat masuk:
+
+```text
+Surat diterima
+↓
+Data surat dicatat
+↓
+File surat disimpan
+↓
+Status received
 ↓
 Monitoring surat diperbarui
 ```
@@ -208,6 +265,7 @@ Role plan:
 Admin:
 
 * Manage master data
+* Manage surat masuk
 * Monitoring semua surat
 * Approval surat
 * Review surat
@@ -216,6 +274,8 @@ User:
 
 * Membuat surat
 * Melihat surat sendiri
+* Input surat masuk
+* Melihat riwayat surat masuk
 * Monitoring status approval surat
 
 ---
