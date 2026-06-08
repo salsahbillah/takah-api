@@ -69,6 +69,8 @@ Digunakan untuk konfigurasi format nomor surat otomatis.
 
 Setiap konfigurasi nomor surat memiliki relasi dengan Master Takah sehingga setiap jenis surat dapat menggunakan format nomor yang berbeda.
 
+Config nomor surat juga digunakan untuk menentukan aturan reset nomor surat.
+
 Contoh format:
 
 ```text
@@ -83,6 +85,11 @@ Contoh format:
 | division_code | varchar   | Kode divisi         |
 | reset_type    | varchar   | monthly / yearly    |
 | created_at    | timestamp | Waktu dibuat        |
+
+Keterangan:
+
+* `monthly` → nomor surat reset setiap bulan
+* `yearly` → nomor surat reset setiap tahun
 
 ---
 
@@ -142,17 +149,27 @@ Flow approval:
 
 ## 7. surat_masuk
 
-Digunakan untuk menyimpan surat masuk dari pihak luar.
+Digunakan untuk menyimpan surat masuk dari pihak luar perusahaan atau instansi.
 
-| Field         | Type      | Notes           |
-| ------------- | --------- | --------------- |
-| id            | bigint    | Primary key     |
-| nomor_surat   | varchar   | Nomor surat     |
-| pengirim      | varchar   | Pengirim surat  |
-| perihal       | varchar   | Perihal surat   |
-| file_surat    | varchar   | File scan surat |
-| tanggal_surat | date      | Tanggal surat   |
-| created_at    | timestamp | Waktu dibuat    |
+| Field         | Type      | Notes            |
+| ------------- | --------- | ---------------- |
+| id            | bigint    | Primary key      |
+| nomor_surat   | varchar   | Nomor surat      |
+| pengirim      | varchar   | Pengirim surat   |
+| penerima      | varchar   | Penerima surat   |
+| perihal       | varchar   | Perihal surat    |
+| file_surat    | varchar   | File scan surat  |
+| tanggal_surat | date      | Tanggal surat    |
+| keterangan    | text      | Keterangan surat |
+| created_by    | bigint    | User input       |
+| created_at    | timestamp | Waktu dibuat     |
+
+Flow surat masuk:
+
+* Surat diterima dari pihak luar
+* Data surat dicatat ke sistem
+* File surat diupload
+* Surat masuk tersimpan
 
 ---
 
@@ -185,6 +202,10 @@ master_takah
     ├── approval_surat
     │
     └── monitoring_surat
+
+surat_masuk
+│
+└── monitoring_surat
 ```
 
 Relationship:
@@ -194,38 +215,41 @@ Relationship:
 * `surat_keluar.takah_id` → `master_takah.id`
 * `approval_surat.surat_keluar_id` → `surat_keluar.id`
 * `monitoring_surat.surat_keluar_id` → `surat_keluar.id`
-
 ---
 
 
 # Generate Nomor Surat
 
-Nomor surat dibuat otomatis berdasarkan:
+Nomor surat dibuat otomatis berdasarkan konfigurasi nomor surat yang terhubung dengan Master Takah.
+
+Nomor surat dibuat berdasarkan:
 
 * nomor urut
 * kode surat
 * kode perusahaan/divisi
 * bulan dan tahun
 
-Contoh:
+Contoh reset bulanan:
 
-```text id="v4rxsr"
+```text
 001/UND/CBN/052026
 002/UND/CBN/052026
 001/UND/CBN/062026
 ```
 
-Keterangan:
+Contoh reset tahunan:
 
-* `001` → nomor urut surat
-* `UND` → kode jenis surat
-* `CBN` → kode perusahaan/divisi
-* `052026` → bulan dan tahun
+```text
+001/SKET/CBN/2026
+002/SKET/CBN/2026
+001/SKET/CBN/2027
+```
 
 Aturan:
 
 * Nomor surat bertambah otomatis.
-* Nomor surat reset setiap bulan.
+* Reset nomor surat mengikuti config yang digunakan.
+* Reset dapat dilakukan per bulan atau per tahun.
 
 ---
 

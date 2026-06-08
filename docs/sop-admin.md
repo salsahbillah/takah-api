@@ -18,16 +18,18 @@ Admin memiliki akses untuk:
 * Mengelola Master Takah
 * Mengelola template surat
 * Mengelola config nomor surat
+* Mengelola surat masuk
 * Monitoring seluruh surat
 * Approve surat
 * Review surat
 * Melihat riwayat approval surat
+* Melihat riwayat surat masuk
 
 ---
 
 # Flow Admin
 
-```text id="8n7nrl"
+```text
 Admin login
 ↓
 Admin mengelola master data
@@ -35,6 +37,8 @@ Admin mengelola master data
 Admin mengelola template surat
 ↓
 Admin mengelola config nomor surat
+↓
+Admin mengelola surat masuk
 ↓
 Admin monitoring surat
 ↓
@@ -115,18 +119,48 @@ Admin dapat mengatur format nomor surat.
 
 Contoh format:
 
-```text id="5n6l4w"
+```text
 001/UND/CBN/052026
 ```
 
 Aturan:
 
 * Nomor otomatis bertambah
-* Reset setiap bulan
+* Reset mengikuti config yang digunakan
+
+Contoh:
+
+* monthly → reset setiap bulan
+* yearly → reset setiap tahun
 
 ---
 
-# 5. Monitoring Surat
+# 5. Manage Surat Masuk
+
+Admin dapat:
+
+* Menambah data surat masuk
+* Mengubah data surat masuk
+* Menghapus data surat masuk
+* Melihat riwayat surat masuk
+
+Flow:
+
+```text
+Surat diterima dari pihak luar
+↓
+Admin input data surat masuk
+↓
+Admin upload file surat
+↓
+Data surat masuk disimpan
+↓
+Surat masuk tercatat pada sistem
+```
+
+---
+
+# 6. Monitoring Surat
 
 Admin dapat melihat:
 
@@ -136,6 +170,7 @@ Admin dapat melihat:
 * Surat approved
 * Surat rejected
 * Riwayat approval surat
+* Riwayat surat masuk
 
 Contoh status:
 
@@ -143,14 +178,15 @@ Contoh status:
 * pending
 * approved
 * rejected
+* received
 
 ---
 
-# 6. Approval Surat
+# 7. Approval Surat
 
 Flow approval:
 
-```text id="v3ldu5"
+```text
 User membuat surat
 ↓
 Surat masuk monitoring approval
@@ -186,6 +222,7 @@ Status implementasi saat ini:
 | CRUD Surat           | Done   |
 | Approval surat       | Todo   |
 | Monitoring surat     | Todo   |
+| Surat masuk          | Todo   |
 | Database integration | Todo   |
 
 ---
