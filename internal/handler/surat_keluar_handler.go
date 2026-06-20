@@ -3,10 +3,10 @@ package handler
 import (
 	"net/http"
 	"strconv"
-
+	"takah-api/internal/helper"
 	"takah-api/internal/model"
-
 	"github.com/gin-gonic/gin"
+	
 )
 
 var suratKeluarData = []model.SuratKeluarResponse{
@@ -61,11 +61,37 @@ func CreateSuratKeluar(c *gin.Context) {
 		return
 	}
 
+	var selectedConfig model.ConfigNomorResponse
+	configFound := false
+
+	for i, config := range configNomorData {
+		if config.TakahID == request.TakahID {
+			configNomorData[i].LastNumber++
+			selectedConfig = configNomorData[i]
+			configFound = true
+			break
+		}
+	}
+
+	if !configFound {
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "Config nomor surat untuk takah ini tidak ditemukan",
+		})
+		return
+	}
+
+	nomorSurat := helper.GenerateNomorSurat(
+		selectedConfig.LastNumber-1,
+		selectedConfig.TakahCode,
+		selectedConfig.CompanyCode,
+		selectedConfig.ResetType,
+	)
+
 	response := model.SuratKeluarResponse{
 		ID:           len(suratKeluarData) + 1,
-		NomorSurat:  "AUTO-GENERATE-NANTI",
+		NomorSurat:  nomorSurat,
 		TakahID:      request.TakahID,
-		TakahCode:    "-",
+		TakahCode:    selectedConfig.TakahCode,
 		TujuanSurat:  request.TujuanSurat,
 		Perihal:      request.Perihal,
 		Lampiran:     request.Lampiran,
