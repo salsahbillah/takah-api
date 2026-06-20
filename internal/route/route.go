@@ -42,4 +42,11 @@ func SetupRoutes(router *gin.Engine) {
 	configNomor.GET("/:id", handler.GetConfigNomorByID)
 	configNomor.PUT("/:id", handler.UpdateConfigNomor)
 	configNomor.DELETE("/:id", handler.DeleteConfigNomor)
+
+	suratKeluar := protected.Group("/surat-keluar")
+	suratKeluar.GET("", handler.GetAllSuratKeluar)
+	suratKeluar.POST("", handler.CreateSuratKeluar)
+	suratKeluar.GET("/:id", handler.GetSuratKeluarByID)
+	suratKeluar.PUT("/:id", handler.UpdateSuratKeluar)
+	suratKeluar.DELETE("/:id", handler.DeleteSuratKeluar)
 }

@@ -22,6 +22,15 @@ var configNomorData = []model.ConfigNomorResponse{
 	},
 }
 
+func findTakahByID(id int) (model.TakahResponse, bool) {
+	for _, takah := range takahData {
+		if takah.ID == id {
+			return takah, true
+		}
+	}
+	return model.TakahResponse{}, false
+}
+
 func GetAllConfigNomor(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Data config nomor surat berhasil diambil",
@@ -57,10 +66,16 @@ func CreateConfigNomor(c *gin.Context) {
 		return
 	}
 
+	takah, found := findTakahByID(request.TakahID)
+	if !found {
+		c.JSON(http.StatusNotFound, gin.H{"message": "Master takah tidak ditemukan"})
+		return
+	}
+
 	response := model.ConfigNomorResponse{
 		ID:           len(configNomorData) + 1,
 		TakahID:      request.TakahID,
-		TakahCode:    "-",
+		TakahCode:    takah.Code,
 		CompanyCode:  request.CompanyCode,
 		DivisionCode: request.DivisionCode,
 		ResetType:    request.ResetType,
@@ -89,10 +104,16 @@ func UpdateConfigNomor(c *gin.Context) {
 		return
 	}
 
+	takah, found := findTakahByID(request.TakahID)
+	if !found {
+		c.JSON(http.StatusNotFound, gin.H{"message": "Master takah tidak ditemukan"})
+		return
+	}
+
 	response := model.ConfigNomorResponse{
 		ID:           id,
 		TakahID:      request.TakahID,
-		TakahCode:    "-",
+		TakahCode:    takah.Code,
 		CompanyCode:  request.CompanyCode,
 		DivisionCode: request.DivisionCode,
 		ResetType:    request.ResetType,
