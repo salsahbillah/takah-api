@@ -2,6 +2,7 @@ package route
 
 import (
 	"takah-api/internal/handler"
+	"takah-api/internal/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,16 +19,27 @@ func SetupRoutes(router *gin.Engine) {
 	auth := api.Group("/auth")
 	auth.POST("/login", handler.Login)
 
-	surat := api.Group("/surat")
+	protected := api.Group("")
+	protected.Use(middleware.AuthMiddleware())
+
+	surat := protected.Group("/surat")
 	surat.GET("", handler.GetAllSurat)
 	surat.POST("", handler.CreateSurat)
 	surat.GET("/:id", handler.GetSuratByID)
 	surat.PUT("/:id", handler.UpdateSurat)
 	surat.DELETE("/:id", handler.DeleteSurat)
-	takah := api.Group("/takah")
+
+	takah := protected.Group("/takah")
 	takah.GET("", handler.GetAllTakah)
 	takah.POST("", handler.CreateTakah)
 	takah.GET("/:id", handler.GetTakahByID)
 	takah.PUT("/:id", handler.UpdateTakah)
 	takah.DELETE("/:id", handler.DeleteTakah)
+
+	configNomor := protected.Group("/config-nomor")
+	configNomor.GET("", handler.GetAllConfigNomor)
+	configNomor.POST("", handler.CreateConfigNomor)
+	configNomor.GET("/:id", handler.GetConfigNomorByID)
+	configNomor.PUT("/:id", handler.UpdateConfigNomor)
+	configNomor.DELETE("/:id", handler.DeleteConfigNomor)
 }
