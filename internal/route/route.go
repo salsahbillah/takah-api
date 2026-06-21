@@ -49,4 +49,10 @@ func SetupRoutes(router *gin.Engine) {
 	suratKeluar.GET("/:id", handler.GetSuratKeluarByID)
 	suratKeluar.PUT("/:id", handler.UpdateSuratKeluar)
 	suratKeluar.DELETE("/:id", handler.DeleteSuratKeluar)
+
+	approval := protected.Group("/approval")
+	approval.GET("", handler.GetAllApproval)
+	approval.POST("", handler.CreateApproval)
+	approval.GET("/:id", handler.GetApprovalByID)
+	approval.PUT("/:id", handler.UpdateApproval)
 }
