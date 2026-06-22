@@ -8,7 +8,7 @@ Dokumen ini digunakan untuk mencatat progress development dan roadmap pengembang
 
 Saat ini project masih berada pada tahap:
 
-```text id="p8e7tq"
+```text
 Planning & Basic Backend Development
 ```
 
@@ -17,7 +17,7 @@ Fokus utama:
 * Menyusun flow aplikasi
 * Menyusun dokumentasi sistem
 * Menyusun rancangan database
-* Membuat basic REST API
+* Mengembangkan REST API utama
 * Menyiapkan struktur backend project
 
 ---
@@ -37,12 +37,12 @@ Fokus utama:
 
 ## 2. Authentication
 
-| Task               | Status | Notes           |
-| ------------------ | ------ | --------------- |
-| Dummy login API    | Done   | Login basic     |
-| JWT authentication | Todo   | Planned         |
-| Password hashing   | Todo   | Planned         |
-| Authorization role | Todo   | Admin/User role |
+| Task               | Status | Notes                         |
+| ------------------ | ------ | ----------------------------- |
+| Dummy login API    | Done   | Login basic                   |
+| JWT authentication | Done   | JWT middleware sudah tersedia |
+| Password hashing   | Todo   | Planned                       |
+| Authorization role | Todo   | Admin/User role               |
 
 ---
 
@@ -62,29 +62,29 @@ Fokus utama:
 
 ## 4. Surat Module
 
-| Task                 | Status  | Notes                    |
-| -------------------- | ------- | ------------------------ |
-| CRUD Surat           | Done    | Dummy module             |
-| Surat keluar         | Partial | Basic structure tersedia |
-| Surat masuk          | Todo    | Planned                  |
-| Monitoring surat     | Todo    | Planned                  |
-| Approval surat       | Todo    | Planned                  |
-| Approval tracking    | Todo    | Planned                  |
-| Multi level approval | Todo    | Planned                  |
+| Task                 | Status  | Notes                           |
+| -------------------- | ------- | ------------------------------- |
+| CRUD Surat           | Done    | Dummy module                    |
+| Surat keluar         | Done    | CRUD surat keluar tersedia      |
+| Surat masuk          | Todo    | Planned                         |
+| Monitoring surat     | Done    | CRUD monitoring tersedia        |
+| Approval surat       | Done    | CRUD approval tersedia          |
+| Approval tracking    | Partial | Riwayat approval dasar tersedia |
+| Multi level approval | Todo    | Planned                         |
 
 ---
 
 ## 5. Config Nomor Surat
 
-| Task                    | Status | Notes   |
-| ----------------------- | ------ | ------- |
-| Generate nomor otomatis | Todo   | Planned |
-| Reset nomor bulanan     | Todo   | Planned |
-| Config format nomor     | Todo   | Planned |
+| Task                    | Status  | Notes                                       |
+| ----------------------- | ------- | ------------------------------------------- |
+| Generate nomor otomatis | Done    | Generate berdasarkan jenis surat            |
+| Reset nomor bulanan     | Partial | Struktur tersedia, belum terintegrasi penuh |
+| Config format nomor     | Done    | Relasi dengan Master Takah tersedia         |
 
 Contoh format:
 
-```text id="vx9o2g"
+```text
 001/UND/CBN/052026
 ```
 
@@ -128,14 +128,18 @@ Contoh format:
 
 ## 9. API Testing
 
-| Task                    | Status | Notes   |
-| ----------------------- | ------ | ------- |
-| Health endpoint testing | Done   | Success |
-| Login endpoint testing  | Done   | Success |
-| Master Takah testing    | Done   | Success |
-| Surat endpoint testing  | Done   | Success |
-| Database testing        | Todo   | Planned |
-| JWT testing             | Todo   | Planned |
+| Task                       | Status | Notes                   |
+| -------------------------- | ------ | ----------------------- |
+| Health endpoint testing    | Done   | Success                 |
+| Login endpoint testing     | Done   | Success                 |
+| JWT middleware testing     | Done   | Success                 |
+| Master Takah testing       | Done   | Success                 |
+| Config Nomor Surat testing | Done   | Success                 |
+| Surat Keluar testing       | Done   | Success                 |
+| Approval Surat testing     | Done   | Success                 |
+| Monitoring Surat testing   | Done   | Success                 |
+| Database testing           | Todo   | Database belum tersedia |
+| Password Hashing Testing   | Todo   | Planned                 |
 
 ---
 
@@ -146,9 +150,10 @@ Prioritas development saat ini:
 1. Finalisasi dokumentasi project
 2. Menyusun SQL schema
 3. Integrasi database MySQL
-4. Generate nomor surat otomatis
-5. JWT authentication
-6. Approval surat dan monitoring approval
+4. Implementasi Surat Masuk
+5. Implementasi Template Surat
+6. Password hashing
+7. Authorization role admin dan user
 
 ---
 
@@ -172,8 +177,8 @@ Fitur pengembangan selanjutnya:
 
 Current status:
 
-```text id="t3e4uo"
+```text
 Project masih dalam tahap development awal dan masih menggunakan dummy data.
 ```
 
-Backend REST API dasar sudah berjalan dan dokumentasi project sedang disusun untuk tahap pengembangan selanjutnya.
+Backend REST API utama sudah berjalan, termasuk Authentication, Master Takah, Config Nomor Surat, Surat Keluar, Approval Surat, dan Monitoring Surat. Dokumentasi project sedang diperbarui sebagai persiapan integrasi database dan pengembangan fitur lanjutan.

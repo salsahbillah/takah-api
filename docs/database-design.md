@@ -49,17 +49,17 @@ Contoh:
 * UND
 * SP
 
-| Field        | Type    | Notes                |
-| ------------ | ------- | -------------------- |
-| id           | bigint  | Primary key          |
-| code         | varchar | Kode surat           |
-| name         | varchar | Nama surat           |
-| description  | text    | Deskripsi surat      |
-| order        | int     | Urutan tampilan      |
-| created_by   | varchar | Pembuat data         |
-| created_time | varchar | Waktu dibuat         |
-| updated_by   | varchar | User update terakhir |
-| updated_time | varchar | Waktu update         |
+| Field        | Type      | Notes                |
+| ------------ | --------- | -------------------- |
+| id           | bigint    | Primary key          |
+| code         | varchar   | Kode surat           |
+| name         | varchar   | Nama surat           |
+| description  | text      | Deskripsi surat      |
+| order        | int       | Urutan tampilan      |
+| created_by   | varchar   | Pembuat data         |
+| created_time | timestamp | Waktu dibuat         |
+| updated_by   | varchar   | User update terakhir |
+| updated_time | timestamp | Waktu update         |
 
 ---
 
@@ -69,27 +69,26 @@ Digunakan untuk konfigurasi format nomor surat otomatis.
 
 Setiap konfigurasi nomor surat memiliki relasi dengan Master Takah sehingga setiap jenis surat dapat menggunakan format nomor yang berbeda.
 
-Config nomor surat juga digunakan untuk menentukan aturan reset nomor surat.
-
 Contoh format:
 
-```text
+```text id="u1gt6l"
 001/UND/CBN/052026
 ```
 
-| Field         | Type      | Notes               |
-| ------------- | --------- | ------------------- |
-| id            | bigint    | Primary key         |
-| takah_id      | bigint    | Relasi master_takah |
-| company_code  | varchar   | Kode perusahaan     |
-| division_code | varchar   | Kode divisi         |
-| reset_type    | varchar   | monthly / yearly    |
-| created_at    | timestamp | Waktu dibuat        |
+| Field         | Type      | Notes                         |
+| ------------- | --------- | ----------------------------- |
+| id            | bigint    | Primary key                   |
+| takah_id      | bigint    | Relasi master_takah           |
+| company_code  | varchar   | Kode perusahaan               |
+| division_code | varchar   | Kode divisi                   |
+| reset_type    | varchar   | monthly / yearly              |
+| last_number   | int       | Nomor terakhir yang digunakan |
+| created_at    | timestamp | Waktu dibuat                  |
 
 Keterangan:
 
-* `monthly` → nomor surat reset setiap bulan
-* `yearly` → nomor surat reset setiap tahun
+* monthly → reset setiap bulan
+* yearly → reset setiap tahun
 
 ---
 
@@ -111,17 +110,19 @@ Digunakan untuk menyimpan template surat berdasarkan jenis surat.
 
 Digunakan untuk menyimpan surat keluar.
 
-| Field        | Type      | Notes                                 |
-| ------------ | --------- | ------------------------------------- |
-| id           | bigint    | Primary key                           |
-| nomor_surat  | varchar   | Nomor surat                           |
-| takah_id     | bigint    | Relasi master_takah                   |
-| tujuan_surat | varchar   | Tujuan surat                          |
-| perihal      | varchar   | Perihal surat                         |
-| lampiran     | varchar   | File lampiran                         |
-| status       | varchar   | draft / pending / approved / rejected |
-| created_by   | bigint    | User pembuat                          |
-| created_at   | timestamp | Waktu dibuat                          |
+| Field         | Type      | Notes                                 |
+| ------------- | --------- | ------------------------------------- |
+| id            | bigint    | Primary key                           |
+| nomor_surat   | varchar   | Nomor surat otomatis                  |
+| takah_id      | bigint    | Relasi master_takah                   |
+| tujuan_surat  | varchar   | Tujuan surat                          |
+| perihal       | varchar   | Perihal surat                         |
+| lampiran      | varchar   | Lampiran surat                        |
+| tanggal_surat | date      | Tanggal surat                         |
+| file_surat    | varchar   | File surat                            |
+| status        | varchar   | draft / pending / approved / rejected |
+| created_by    | bigint    | User pembuat                          |
+| created_at    | timestamp | Waktu dibuat                          |
 
 ---
 
@@ -133,7 +134,7 @@ Digunakan untuk menyimpan proses approval surat keluar.
 | --------------- | --------- | ----------------------------- |
 | id              | bigint    | Primary key                   |
 | surat_keluar_id | bigint    | Relasi surat keluar           |
-| approver_id     | bigint    | User approver                 |
+| approver_name   | varchar   | Nama approver                 |
 | approval_status | varchar   | pending / approved / rejected |
 | notes           | text      | Catatan approval              |
 | approved_at     | timestamp | Waktu approval                |
@@ -164,13 +165,6 @@ Digunakan untuk menyimpan surat masuk dari pihak luar perusahaan atau instansi.
 | created_by    | bigint    | User input       |
 | created_at    | timestamp | Waktu dibuat     |
 
-Flow surat masuk:
-
-* Surat diterima dari pihak luar
-* Data surat dicatat ke sistem
-* File surat diupload
-* Surat masuk tersimpan
-
 ---
 
 ## 8. monitoring_surat
@@ -181,16 +175,17 @@ Digunakan untuk monitoring status surat.
 | --------------- | --------- | ------------------------------------- |
 | id              | bigint    | Primary key                           |
 | surat_keluar_id | bigint    | Relasi surat keluar                   |
+| nomor_surat     | varchar   | Nomor surat                           |
 | status          | varchar   | draft / pending / approved / rejected |
-| notes           | text      | Catatan monitoring                    |
-| updated_by      | bigint    | User update                           |
+| last_approver   | varchar   | Approver terakhir                     |
+| last_notes      | text      | Catatan approval terakhir             |
 | updated_at      | timestamp | Waktu update                          |
 
 ---
 
 # Table Relationship
 
-```text
+```text id="oqmkzh"
 master_takah
 │
 ├── template_surat
@@ -210,13 +205,13 @@ surat_masuk
 
 Relationship:
 
-* `template_surat.takah_id` → `master_takah.id`
-* `config_nomor_surat.takah_id` → `master_takah.id`
-* `surat_keluar.takah_id` → `master_takah.id`
-* `approval_surat.surat_keluar_id` → `surat_keluar.id`
-* `monitoring_surat.surat_keluar_id` → `surat_keluar.id`
----
+* template_surat.takah_id → master_takah.id
+* config_nomor_surat.takah_id → master_takah.id
+* surat_keluar.takah_id → master_takah.id
+* approval_surat.surat_keluar_id → surat_keluar.id
+* monitoring_surat.surat_keluar_id → surat_keluar.id
 
+---
 
 # Generate Nomor Surat
 
@@ -229,27 +224,20 @@ Nomor surat dibuat berdasarkan:
 * kode perusahaan/divisi
 * bulan dan tahun
 
-Contoh reset bulanan:
+Contoh:
 
-```text
+```text id="3g38e9"
 001/UND/CBN/052026
 002/UND/CBN/052026
 001/UND/CBN/062026
 ```
 
-Contoh reset tahunan:
+Status saat ini:
 
-```text
-001/SKET/CBN/2026
-002/SKET/CBN/2026
-001/SKET/CBN/2027
-```
-
-Aturan:
-
-* Nomor surat bertambah otomatis.
-* Reset nomor surat mengikuti config yang digunakan.
-* Reset dapat dilakukan per bulan atau per tahun.
+* Helper generate nomor surat tersedia
+* Nomor surat dibuat otomatis saat membuat Surat Keluar
+* Nomor urut diambil dari Config Nomor Surat
+* Nomor terakhir disimpan pada field last_number
 
 ---
 
@@ -261,6 +249,7 @@ Current database status:
 * Data masih menggunakan dummy data
 * SQL schema masih tahap perancangan
 * Integrasi MySQL masih planned
+* Struktur tabel sudah disesuaikan dengan endpoint yang tersedia
 
 ---
 
@@ -268,10 +257,6 @@ Current database status:
 
 Pengembangan database selanjutnya:
 
-* Audit log
-* Disposisi surat
-* Notification table
-* Attachment table
-* Digital signature
-* Multi company support
-* Approval multi level
+* MySQL integration
+* Migration schema
+* Seeder dummy data

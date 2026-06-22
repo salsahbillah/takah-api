@@ -215,15 +215,20 @@ Admin dapat:
 
 Status implementasi saat ini:
 
+# Current Status
+
 | Feature              | Status |
 | -------------------- | ------ |
-| Login dummy          | Done   |
+| JWT Authentication   | Done   |
 | CRUD Master Takah    | Done   |
 | CRUD Surat           | Done   |
-| Approval surat       | Todo   |
-| Monitoring surat     | Todo   |
-| Surat masuk          | Todo   |
-| Database integration | Todo   |
+| Config Nomor Surat   | Done   |
+| Generate Nomor Surat | Done   |
+| Surat Keluar         | Done   |
+| Approval Surat       | Done   |
+| Monitoring Surat     | Done   |
+| Surat Masuk          | Todo   |
+| Database Integration | Todo   |
 
 ---
 
@@ -231,9 +236,7 @@ Status implementasi saat ini:
 
 Pengembangan admin selanjutnya:
 
-* JWT authentication
-* Dashboard admin
-* Notification system
-* Approval multi level
-* Export PDF
-* Audit log
+* MySQL integration
+* Surat masuk
+* Template surat
+* Upload file surat

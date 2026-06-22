@@ -3,9 +3,10 @@
 Dokumen ini digunakan untuk mencatat proses testing endpoint API pada aplikasi Takah.
 
 Testing dilakukan menggunakan:
-- Postman
-- Browser
-- Localhost environment
+
+* Postman
+* Browser
+* Localhost environment
 
 ---
 
@@ -41,8 +42,8 @@ GET http://localhost:8080/api/v1/health
 
 ## Status
 
-- Success
-- Endpoint berjalan normal
+* Success
+* Endpoint berjalan normal
 
 ---
 
@@ -71,23 +72,15 @@ POST /auth/login
 {
   "message": "Login berhasil",
   "data": {
-    "token": "dummy-token"
+    "token": "jwt-token"
   }
-}
-```
-
-### Failed Response
-
-```json
-{
-  "message": "Email atau password salah"
 }
 ```
 
 ### Status
 
-- Success
-- Dummy authentication berjalan normal
+* Success
+* JWT token berhasil dibuat
 
 ---
 
@@ -103,7 +96,7 @@ GET /takah
 
 ### Status
 
-- Success
+* Success
 
 ---
 
@@ -123,7 +116,7 @@ GET /takah/1
 
 ### Status
 
-- Success
+* Success
 
 ---
 
@@ -135,20 +128,9 @@ GET /takah/1
 POST /takah
 ```
 
-### Example Request
-
-```json
-{
-  "code": "UND",
-  "name": "Surat Undangan",
-  "description": "Jenis surat undangan",
-  "order": 1
-}
-```
-
 ### Status
 
-- Success
+* Success
 
 ---
 
@@ -160,15 +142,9 @@ POST /takah
 PUT /takah/:id
 ```
 
-### Example
-
-```text
-PUT /takah/1
-```
-
 ### Status
 
-- Success
+* Success
 
 ---
 
@@ -180,15 +156,9 @@ PUT /takah/1
 DELETE /takah/:id
 ```
 
-### Example
-
-```text
-DELETE /takah/1
-```
-
 ### Status
 
-- Success
+* Success
 
 ---
 
@@ -204,7 +174,7 @@ GET /surat
 
 ### Status
 
-- Success
+* Success
 
 ---
 
@@ -218,7 +188,7 @@ GET /surat/:id
 
 ### Status
 
-- Success
+* Success
 
 ---
 
@@ -230,21 +200,9 @@ GET /surat/:id
 POST /surat
 ```
 
-### Example Request
-
-```json
-{
-  "nomor_surat": "001/UND/2026",
-  "judul": "Surat Undangan Meeting",
-  "pengirim": "HRD",
-  "penerima": "Staff",
-  "status": "draft"
-}
-```
-
 ### Status
 
-- Success
+* Success
 
 ---
 
@@ -258,7 +216,7 @@ PUT /surat/:id
 
 ### Status
 
-- Success
+* Success
 
 ---
 
@@ -272,20 +230,303 @@ DELETE /surat/:id
 
 ### Status
 
-- Success
+* Success
+
+---
+
+# Config Nomor Surat Testing
+
+## Get All Config Nomor Surat
+
+### Endpoint
+
+```http
+GET /config-nomor
+```
+
+### Status
+
+* Success
+
+---
+
+## Get Config Nomor Surat By ID
+
+### Endpoint
+
+```http
+GET /config-nomor/:id
+```
+
+### Status
+
+* Success
+
+---
+
+## Create Config Nomor Surat
+
+### Endpoint
+
+```http
+POST /config-nomor
+```
+
+### Status
+
+* Success
+
+---
+
+## Update Config Nomor Surat
+
+### Endpoint
+
+```http
+PUT /config-nomor/:id
+```
+
+### Status
+
+* Success
+
+---
+
+## Delete Config Nomor Surat
+
+### Endpoint
+
+```http
+DELETE /config-nomor/:id
+```
+
+### Status
+
+* Success
+
+---
+
+# Surat Keluar Testing
+
+## Get All Surat Keluar
+
+### Endpoint
+
+```http
+GET /surat-keluar
+```
+
+### Status
+
+* Success
+
+---
+
+## Get Surat Keluar By ID
+
+### Endpoint
+
+```http
+GET /surat-keluar/:id
+```
+
+### Status
+
+* Success
+
+---
+
+## Create Surat Keluar
+
+### Endpoint
+
+```http
+POST /surat-keluar
+```
+
+### Status
+
+* Success
+
+### Notes
+
+* Nomor surat berhasil dibuat otomatis berdasarkan Config Nomor Surat.
+* Relasi Master Takah berhasil digunakan saat generate nomor surat.
+
+---
+
+## Update Surat Keluar
+
+### Endpoint
+
+```http
+PUT /surat-keluar/:id
+```
+
+### Status
+
+* Success
+
+---
+
+## Delete Surat Keluar
+
+### Endpoint
+
+```http
+DELETE /surat-keluar/:id
+```
+
+### Status
+
+* Success
+
+---
+
+# Approval Surat Testing
+
+## Get All Approval
+
+### Endpoint
+
+```http
+GET /approval
+```
+
+### Status
+
+* Success
+
+---
+
+## Get Approval By ID
+
+### Endpoint
+
+```http
+GET /approval/:id
+```
+
+### Status
+
+* Success
+
+---
+
+## Create Approval
+
+### Endpoint
+
+```http
+POST /approval
+```
+
+### Status
+
+* Success
+
+---
+
+## Update Approval
+
+### Endpoint
+
+```http
+PUT /approval/:id
+```
+
+### Status
+
+* Success
+
+---
+
+# Monitoring Surat Testing
+
+## Get All Monitoring
+
+### Endpoint
+
+```http
+GET /monitoring
+```
+
+### Status
+
+* Success
+
+---
+
+## Get Monitoring By ID
+
+### Endpoint
+
+```http
+GET /monitoring/:id
+```
+
+### Status
+
+* Success
+
+---
+
+## Create Monitoring
+
+### Endpoint
+
+```http
+POST /monitoring
+```
+
+### Status
+
+* Success
+
+---
+
+## Update Monitoring
+
+### Endpoint
+
+```http
+PUT /monitoring/:id
+```
+
+### Status
+
+* Success
+
+---
+
+## Delete Monitoring
+
+### Endpoint
+
+```http
+DELETE /monitoring/:id
+```
+
+### Status
+
+* Success
 
 ---
 
 # Current Testing Status
 
-| Module | Status | Notes |
-| --- | --- | --- |
-| Health Check | Done | Endpoint berjalan |
-| Login | Done | Dummy authentication |
-| Master Takah | Done | CRUD berjalan |
-| Surat | Done | CRUD berjalan |
-| Database Testing | Todo | Database belum tersedia |
-| JWT Testing | Todo | JWT belum tersedia |
+| Module               | Status | Notes                   |
+| -------------------- | ------ | ----------------------- |
+| Health Check         | Done   | Endpoint berjalan       |
+| Authentication       | Done   | JWT login berhasil      |
+| Master Takah         | Done   | CRUD berjalan           |
+| Surat                | Done   | CRUD berjalan           |
+| Config Nomor Surat   | Done   | CRUD berjalan           |
+| Surat Keluar         | Done   | CRUD berjalan           |
+| Generate Nomor Surat | Done   | Berjalan otomatis       |
+| Approval Surat       | Done   | CRUD berjalan           |
+| Monitoring Surat     | Done   | CRUD berjalan           |
+| Database Testing     | Todo   | Database belum tersedia |
 
 ---
 
@@ -293,12 +534,11 @@ DELETE /surat/:id
 
 Testing yang direncanakan selanjutnya:
 
-- Database integration testing
-- JWT authentication testing
-- Validation testing
-- Error handling testing
-- File upload testing
-- Generate nomor surat testing
-- Monitoring surat testing
-- Load testing
-- API documentation testing
+* Database integration testing
+* Validation testing
+* Error handling testing
+* File upload testing
+* Surat masuk testing
+* Template surat testing
+* Load testing
+* API documentation testing

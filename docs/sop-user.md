@@ -174,13 +174,17 @@ Informasi yang ditampilkan:
 
 Status implementasi saat ini:
 
+# Current Status
+
 | Feature              | Status |
 | -------------------- | ------ |
-| Login dummy          | Done   |
+| JWT Authentication   | Done   |
 | CRUD Surat           | Done   |
-| Generate nomor surat | Todo   |
-| Monitoring surat     | Todo   |
-| Database integration | Todo   |
+| Generate Nomor Surat | Done   |
+| Surat Keluar         | Done   |
+| Monitoring Surat     | Done   |
+| Approval Tracking    | Done   |
+| Database Integration | Todo   |
 
 ---
 
@@ -189,8 +193,5 @@ Status implementasi saat ini:
 Pengembangan user module selanjutnya:
 
 * Upload file surat
-* Export PDF
-* Tracking surat realtime
-* Notification system
-* Digital signature
-* Approval tracking
+* Template surat
+* Surat masuk

@@ -8,11 +8,12 @@ Dokumen ini menjelaskan arsitektur backend, stack teknologi, endpoint API, struk
 
 Backend Takah API menggunakan teknologi berikut:
 
-- Golang
-- Gin Framework
-- REST API
-- MySQL (planned)
-- Laragon (planned for local database development)
+* Golang
+* Gin Framework
+* REST API
+* JWT Authentication
+* MySQL (planned)
+* Laragon (planned for local database development)
 
 ---
 
@@ -37,13 +38,27 @@ takah-api/
 ├── internal/
 │   ├── handler/
 │   │   ├── auth_handler.go
+│   │   ├── takah_handler.go
 │   │   ├── surat_handler.go
-│   │   └── takah_handler.go
+│   │   ├── surat_keluar_handler.go
+│   │   ├── config_nomor_handler.go
+│   │   ├── approval_handler.go
+│   │   └── monitoring_handler.go
+│   │
+│   ├── helper/
+│   │   └── nomor_surat.go
+│   │
+│   ├── middleware/
+│   │   └── auth_middleware.go
 │   │
 │   ├── model/
 │   │   ├── auth_model.go
+│   │   ├── takah_model.go
 │   │   ├── surat_model.go
-│   │   └── takah_model.go
+│   │   ├── surat_keluar_model.go
+│   │   ├── config_nomor_model.go
+│   │   ├── approval_model.go
+│   │   └── monitoring_model.go
 │   │
 │   └── route/
 │       └── route.go
@@ -59,9 +74,11 @@ takah-api/
 
 Backend saat ini menggunakan struktur sederhana berbasis:
 
-- `route`
-- `handler`
-- `model`
+* route
+* handler
+* model
+* helper
+* middleware
 
 Struktur ini digunakan untuk tahap awal development agar endpoint dan alur request-response mudah dipahami.
 
@@ -91,20 +108,70 @@ Base route:
 
 Route yang tersedia saat ini:
 
-| Module | Method | Endpoint | Handler |
-| --- | --- | --- | --- |
-| Health | GET | `/api/v1/health` | inline handler |
-| Auth | POST | `/api/v1/auth/login` | `Login` |
-| Master Takah | GET | `/api/v1/takah` | `GetAllTakah` |
-| Master Takah | POST | `/api/v1/takah` | `CreateTakah` |
-| Master Takah | GET | `/api/v1/takah/:id` | `GetTakahByID` |
-| Master Takah | PUT | `/api/v1/takah/:id` | `UpdateTakah` |
-| Master Takah | DELETE | `/api/v1/takah/:id` | `DeleteTakah` |
-| Surat | GET | `/api/v1/surat` | `GetAllSurat` |
-| Surat | POST | `/api/v1/surat` | `CreateSurat` |
-| Surat | GET | `/api/v1/surat/:id` | `GetSuratByID` |
-| Surat | PUT | `/api/v1/surat/:id` | `UpdateSurat` |
-| Surat | DELETE | `/api/v1/surat/:id` | `DeleteSurat` |
+| Module             | Method | Endpoint               |
+| ------------------ | ------ | ---------------------- |
+| Health             | GET    | `/api/v1/health`       |
+| Auth               | POST   | `/api/v1/auth/login`   |
+| Master Takah       | CRUD   | `/api/v1/takah`        |
+| Surat Dummy        | CRUD   | `/api/v1/surat`        |
+| Config Nomor Surat | CRUD   | `/api/v1/config-nomor` |
+| Surat Keluar       | CRUD   | `/api/v1/surat-keluar` |
+| Approval Surat     | CRUD   | `/api/v1/approval`     |
+| Monitoring Surat   | CRUD   | `/api/v1/monitoring`   |
+
+---
+
+## Middleware Layer
+
+Folder:
+
+```text
+internal/middleware
+```
+
+Middleware digunakan untuk memvalidasi token JWT sebelum user mengakses endpoint yang dilindungi.
+
+File:
+
+```text
+auth_middleware.go
+```
+
+Fungsi:
+
+* Validasi JWT token
+* Membatasi akses endpoint
+* Menyimpan data user dari token ke context request
+
+---
+
+## Helper Layer
+
+Folder:
+
+```text
+internal/helper
+```
+
+Helper digunakan untuk fungsi pendukung yang dapat digunakan oleh beberapa module.
+
+File:
+
+```text
+nomor_surat.go
+```
+
+Fungsi:
+
+* Generate nomor surat otomatis
+* Membuat format nomor surat berdasarkan konfigurasi
+* Digunakan pada proses pembuatan surat keluar
+
+Contoh:
+
+```text
+001/SKET/CBN/062026
+```
 
 ---
 
@@ -120,18 +187,22 @@ Handler digunakan untuk menerima request dari client, memproses data sementara, 
 
 File handler saat ini:
 
-| File | Description |
-| --- | --- |
-| `auth_handler.go` | Handler login dummy |
-| `takah_handler.go` | Handler CRUD Master Takah |
-| `surat_handler.go` | Handler CRUD Surat dummy |
+| File                    | Description             |
+| ----------------------- | ----------------------- |
+| auth_handler.go         | Login authentication    |
+| takah_handler.go        | CRUD Master Takah       |
+| surat_handler.go        | CRUD Surat dummy        |
+| config_nomor_handler.go | CRUD Config Nomor Surat |
+| surat_keluar_handler.go | CRUD Surat Keluar       |
+| approval_handler.go     | CRUD Approval Surat     |
+| monitoring_handler.go   | CRUD Monitoring Surat   |
 
 Catatan:
 
-- Data Master Takah saat ini masih disimpan pada variable `takahData`.
-- Data Surat saat ini masih menggunakan dummy data di dalam handler.
-- Belum ada service layer dan repository layer.
-- Belum terhubung ke database.
+* Data masih menggunakan dummy data.
+* Belum menggunakan database.
+* Belum menggunakan service layer.
+* Belum menggunakan repository layer.
 
 ---
 
@@ -145,26 +216,23 @@ internal/model
 
 Model digunakan untuk mendefinisikan request dan response struct.
 
-File model saat ini:
+Model yang tersedia:
 
-| File | Struct |
-| --- | --- |
-| `auth_model.go` | `LoginRequest`, `LoginResponse` |
-| `takah_model.go` | `TakahRequest`, `TakahResponse` |
-| `surat_model.go` | `SuratRequest`, `SuratResponse` |
-
-Catatan:
-
-- `LoginRequest` digunakan pada handler login.
-- `LoginResponse` sudah tersedia, tetapi response login saat ini masih menggunakan `gin.H`.
-- `TakahRequest` dan `TakahResponse` digunakan untuk CRUD Master Takah.
-- `SuratRequest` dan `SuratResponse` digunakan untuk CRUD Surat.
+| File                  |
+| --------------------- |
+| auth_model.go         |
+| takah_model.go        |
+| surat_model.go        |
+| config_nomor_model.go |
+| surat_keluar_model.go |
+| approval_model.go     |
+| monitoring_model.go   |
 
 ---
 
 ## Authentication
 
-Authentication saat ini masih menggunakan dummy login.
+Authentication saat ini menggunakan JWT token.
 
 ### Endpoint
 
@@ -187,96 +255,181 @@ POST /api/v1/auth/login
 {
   "message": "Login berhasil",
   "data": {
-    "token": "dummy-token"
+    "token": "jwt-token"
   }
-}
-```
-
-### Failed Response
-
-```json
-{
-  "message": "Email atau password salah"
 }
 ```
 
 Catatan:
 
-- Belum menggunakan database user.
-- Belum menggunakan password hashing.
-- Belum menggunakan JWT.
-- Token masih dummy.
+* Menggunakan JWT token.
+* Middleware authentication sudah tersedia.
+* Password hashing belum diimplementasikan.
+* Data user masih menggunakan dummy data.
+* Database user belum tersedia.
 
 ---
 
 ## Master Takah
 
-Master Takah adalah data master untuk jenis surat.
+Master Takah digunakan sebagai data master jenis surat.
 
-Contoh data:
+Contoh:
 
-| Code | Name |
-| --- | --- |
-| SKET | Surat Keterangan |
-| SKK | Surat Keterangan Kerja |
+| Code | Name                   |
+| ---- | ---------------------- |
+| SKET | Surat Keterangan       |
+| SKK  | Surat Keterangan Kerja |
+| UND  | Surat Undangan         |
+| SP   | Surat Peringatan       |
 
-Master Takah digunakan sebagai dasar untuk:
+Master Takah digunakan oleh:
 
-- Jenis surat
-- Template surat
-- Generate nomor surat
-- Monitoring surat
-- Filtering laporan surat
+* Config Nomor Surat
+* Generate Nomor Surat
+* Surat Keluar
+* Approval Surat
+* Monitoring Surat
 
-### Request Create / Update
+---
 
-```json
-{
-  "code": "UND",
-  "name": "Surat Undangan",
-  "description": "Jenis surat undangan",
-  "order": 1
-}
+## Config Nomor Surat
+
+Config nomor surat digunakan untuk menentukan format nomor surat otomatis.
+
+Relasi:
+
+```text
+Config Nomor Surat
+↓
+Master Takah
 ```
 
-### Response
+Contoh:
 
-```json
-{
-  "message": "Data takah berhasil dibuat",
-  "data": {
-    "id": 3,
-    "code": "UND",
-    "name": "Surat Undangan",
-    "description": "Jenis surat undangan",
-    "order": 1,
-    "created_by": "Admin",
-    "created_time": "2026-05-04 15:00",
-    "updated_by": "Admin",
-    "updated_time": "2026-05-04 15:00"
-  }
-}
+```text
+001/SKET/CBN/062026
+```
+
+Fitur:
+
+* CRUD Config Nomor Surat
+* Relasi dengan Master Takah
+* Menyimpan kode perusahaan
+* Menyimpan tipe reset nomor surat
+* Menyimpan nomor terakhir
+
+---
+
+## Generate Nomor Surat
+
+Generate nomor surat dilakukan secara otomatis saat surat keluar dibuat.
+
+Format:
+
+```text
+001/SKET/CBN/062026
+```
+
+Komponen:
+
+* Nomor urut
+* Kode surat
+* Kode perusahaan
+* Bulan dan tahun
+
+Aturan:
+
+* Nomor bertambah otomatis.
+* Berdasarkan konfigurasi nomor surat.
+* Mendukung reset bulanan dan tahunan (planned improvement).
+
+---
+
+## Surat Keluar
+
+Surat keluar digunakan untuk membuat surat yang dikirim keluar perusahaan.
+
+Data utama:
+
+* Nomor surat
+* Jenis surat
+* Tujuan surat
+* Perihal
+* Lampiran
+* Tanggal surat
+* Status
+
+Status:
+
+```text
+draft
+pending
+approved
+rejected
+completed
+```
+
+Flow:
+
+```text
+Pilih jenis surat
+↓
+Generate nomor surat
+↓
+Simpan draft
+↓
+Approval
+↓
+Monitoring
 ```
 
 ---
 
-## Surat
+## Approval Surat
 
-Modul Surat saat ini masih berupa basic CRUD dummy yang dibuat pada tahap awal development.
+Approval surat digunakan untuk proses review dan persetujuan surat.
 
-Field utama:
+Data utama:
 
-- `nomor_surat`
-- `judul`
-- `pengirim`
-- `penerima`
-- `status`
+* Surat keluar
+* Approver
+* Status approval
+* Catatan approval
 
-Catatan:
+Status:
 
-- Modul ini masih dummy.
-- Modul ini dapat dikembangkan menjadi Surat Masuk dan Surat Keluar.
-- Fokus pengembangan selanjutnya diarahkan ke Master Takah, Config Nomor Surat, Template Surat, Surat Masuk, Surat Keluar, dan Monitoring Surat.
+```text
+pending
+approved
+rejected
+```
+
+Tujuan:
+
+* Mengetahui siapa yang melakukan review
+* Menyimpan catatan approval
+* Menyimpan riwayat approval
+
+---
+
+## Monitoring Surat
+
+Monitoring surat digunakan untuk melihat status dan riwayat surat.
+
+Informasi:
+
+* Nomor surat
+* Status surat
+* Approver terakhir
+* Catatan approval terakhir
+* Waktu update
+
+Tujuan:
+
+* Monitoring status surat
+* Tracking proses approval
+* Melihat riwayat review
 
 ---
 
@@ -286,57 +439,42 @@ Database belum terintegrasi.
 
 Database yang direncanakan:
 
-- `users`
-- `master_takah`
-- `config_nomor_surat`
-- `template_surat`
-- `surat_keluar`
-- `surat_masuk`
-- `monitoring_surat`
+* users
+* master_takah
+* config_nomor_surat
+* template_surat
+* surat_keluar
+* approval_surat
+* surat_masuk
+* monitoring_surat
 
-Database engine yang direncanakan:
+Database engine:
 
-- MySQL
-- Laragon for local development
-
----
-
-## Generate Nomor Surat Plan
-
-Format nomor surat yang direncanakan:
-
-```text
-001/UND/CBN/052026
-```
-
-Keterangan:
-
-- `001` = nomor urut
-- `UND` = kode jenis surat dari Master Takah
-- `CBN` = kode perusahaan/divisi
-- `052026` = bulan dan tahun
-
-Aturan:
-
-- Nomor surat bertambah otomatis.
-- Nomor surat reset setiap bulan dan tahun.
+* MySQL
+* Laragon
 
 ---
 
 ## Current Development Status
 
-| Feature | Status | Notes |
-| --- | --- | --- |
-| Setup Golang + Gin | Done | Project sudah berjalan lokal |
-| Route API v1 | Done | Base route `/api/v1` |
-| Health Check | Done | `GET /api/v1/health` |
-| Login dummy | Done | Belum JWT |
-| CRUD Master Takah | Done | Masih dummy data |
-| CRUD Surat | Done | Masih dummy data |
-| Database integration | Todo | Planned MySQL |
-| JWT Authentication | Todo | Planned |
-| Service layer | Todo | Planned |
-| Repository layer | Todo | Planned |
+| Feature                 | Status | Notes                   |
+| ----------------------- | ------ | ----------------------- |
+| Setup Golang + Gin      | Done   | Project berjalan normal |
+| Route API v1            | Done   | Base route tersedia     |
+| Health Check            | Done   | Berjalan normal         |
+| JWT Authentication      | Done   | Middleware tersedia     |
+| CRUD Master Takah       | Done   | Dummy data              |
+| CRUD Surat              | Done   | Dummy data              |
+| CRUD Config Nomor Surat | Done   | Relasi Master Takah     |
+| Generate Nomor Surat    | Done   | Helper tersedia         |
+| CRUD Surat Keluar       | Done   | Berjalan normal         |
+| CRUD Approval Surat     | Done   | Berjalan normal         |
+| CRUD Monitoring Surat   | Done   | Berjalan normal         |
+| Database Integration    | Todo   | Planned MySQL           |
+| Template Surat          | Todo   | Planned                 |
+| Surat Masuk             | Todo   | Planned                 |
+| Service Layer           | Todo   | Planned                 |
+| Repository Layer        | Todo   | Planned                 |
 
 ---
 
@@ -344,16 +482,12 @@ Aturan:
 
 Pengembangan backend selanjutnya:
 
-- Integrasi MySQL
-- Membuat SQL schema
-- Membuat repository layer
-- Membuat service layer
-- JWT authentication
-- Request validation lebih lengkap
-- Helper generate nomor surat otomatis
-- Upload file surat
-- Template surat
-- Monitoring surat
-- Export PDF
-- API documentation Swagger/OpenAPI
-- Logging dan error handling
+* Integrasi MySQL
+* SQL schema
+* Repository layer
+* Service layer
+* Password hashing
+* Authorization role
+* Template surat
+* Surat masuk
+* Upload file surat

@@ -29,6 +29,7 @@ Surat Masuk
 ↓
 Monitoring Surat
 ```
+
 ---
 
 # 1. Master Takah Integration
@@ -73,6 +74,11 @@ Contoh:
 * Surat Undangan menggunakan template UND
 * Surat Keterangan menggunakan template SKET
 
+Status saat ini:
+
+* Belum diimplementasikan
+* Masih tahap perencanaan
+
 ---
 
 # 3. Config Nomor Surat Integration
@@ -113,6 +119,12 @@ Aturan reset:
 * monthly → reset setiap bulan
 * yearly → reset setiap tahun
 
+Status saat ini:
+
+* CRUD Config Nomor Surat tersedia
+* Relasi dengan Master Takah tersedia
+* Generate nomor surat sudah terintegrasi dengan Surat Keluar
+
 ---
 
 # 4. Surat Keluar Integration
@@ -145,6 +157,12 @@ Approve / reject surat
 Monitoring surat
 ```
 
+Status saat ini:
+
+* CRUD Surat Keluar tersedia
+* Nomor surat dibuat otomatis berdasarkan Config Nomor Surat
+* Status awal surat adalah draft
+
 ---
 
 # 5. Approval Surat Integration
@@ -174,6 +192,11 @@ Tujuan:
 * Menyimpan riwayat approval surat
 * Monitoring proses surat
 
+Status saat ini:
+
+* CRUD Approval Surat tersedia
+* Data approver dan catatan approval dapat disimpan
+
 ---
 
 # 6. Surat Masuk Integration
@@ -200,6 +223,12 @@ Tujuan:
 * Mempermudah pencarian surat masuk
 * Menyimpan riwayat surat yang diterima
 * Monitoring surat masuk
+
+Status saat ini:
+
+* Belum diimplementasikan
+* Masih tahap perencanaan
+
 ---
 
 # 7. Monitoring Surat Integration
@@ -251,11 +280,24 @@ Status received
 Monitoring surat diperbarui
 ```
 
+Status saat ini:
+
+* CRUD Monitoring Surat tersedia
+* Monitoring menyimpan status surat
+* Monitoring menyimpan approver terakhir
+* Monitoring menyimpan catatan approval terakhir
+
 ---
 
 # Authentication Integration
 
 Authentication digunakan untuk membatasi akses user.
+
+Saat ini:
+
+* Authentication menggunakan JWT
+* Login menghasilkan token JWT
+* Middleware digunakan untuk memvalidasi token pada endpoint yang dilindungi
 
 Role plan:
 
@@ -299,15 +341,19 @@ Database yang direncanakan:
 
 # Current Integration Status
 
-| Module               | Status  | Notes               |
-| -------------------- | ------- | ------------------- |
-| Master Takah         | Partial | CRUD dummy tersedia |
-| Surat                | Partial | CRUD dummy tersedia |
-| Authentication       | Partial | Dummy login         |
-| Approval surat       | Todo    | Planned             |
-| Database             | Todo    | Belum terintegrasi  |
-| Generate nomor surat | Todo    | Belum dibuat        |
-| Monitoring surat     | Todo    | Belum dibuat        |
+| Module               | Status | Notes                                |
+| -------------------- | ------ | ------------------------------------ |
+| Master Takah         | Done   | CRUD tersedia                        |
+| Surat                | Done   | CRUD dummy tersedia                  |
+| Authentication       | Done   | JWT authentication tersedia          |
+| Config Nomor Surat   | Done   | Relasi dengan Master Takah tersedia  |
+| Generate Nomor Surat | Done   | Helper generate nomor surat tersedia |
+| Surat Keluar         | Done   | Generate nomor otomatis berjalan     |
+| Approval Surat       | Done   | CRUD approval tersedia               |
+| Monitoring Surat     | Done   | CRUD monitoring tersedia             |
+| Database             | Todo   | Belum terintegrasi MySQL             |
+| Template Surat       | Todo   | Belum diimplementasikan              |
+| Surat Masuk          | Todo   | Belum diimplementasikan              |
 
 ---
 
@@ -315,10 +361,10 @@ Database yang direncanakan:
 
 Pengembangan integrasi selanjutnya:
 
-* JWT authentication
 * MySQL integration
 * Upload file surat
-* Export PDF
+* Template surat
+* Surat masuk
 * Approval multi level
 * Notification system
 * Audit log
