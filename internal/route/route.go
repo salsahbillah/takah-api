@@ -55,4 +55,11 @@ func SetupRoutes(router *gin.Engine) {
 	approval.POST("", handler.CreateApproval)
 	approval.GET("/:id", handler.GetApprovalByID)
 	approval.PUT("/:id", handler.UpdateApproval)
+
+	monitoring := protected.Group("/monitoring")
+	monitoring.GET("", handler.GetAllMonitoring)
+	monitoring.POST("", handler.CreateMonitoring)
+	monitoring.GET("/:id", handler.GetMonitoringByID)
+	monitoring.PUT("/:id", handler.UpdateMonitoring)
+	monitoring.DELETE("/:id", handler.DeleteMonitoring)
 }
