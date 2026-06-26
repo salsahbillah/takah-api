@@ -69,4 +69,11 @@ func SetupRoutes(router *gin.Engine) {
 	templateSurat.GET("/:id", handler.GetTemplateSuratByID)
 	templateSurat.PUT("/:id", handler.UpdateTemplateSurat)
 	templateSurat.DELETE("/:id", handler.DeleteTemplateSurat)
+
+	suratMasuk := protected.Group("/surat-masuk")
+	suratMasuk.GET("", handler.GetAllSuratMasuk)
+	suratMasuk.POST("", handler.CreateSuratMasuk)
+	suratMasuk.GET("/:id", handler.GetSuratMasukByID)
+	suratMasuk.PUT("/:id", handler.UpdateSuratMasuk)
+	suratMasuk.DELETE("/:id", handler.DeleteSuratMasuk)
 }
