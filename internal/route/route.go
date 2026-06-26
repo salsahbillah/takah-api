@@ -76,4 +76,6 @@ func SetupRoutes(router *gin.Engine) {
 	suratMasuk.GET("/:id", handler.GetSuratMasukByID)
 	suratMasuk.PUT("/:id", handler.UpdateSuratMasuk)
 	suratMasuk.DELETE("/:id", handler.DeleteSuratMasuk)
+
+
 }
