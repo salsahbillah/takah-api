@@ -108,12 +108,6 @@ GET /takah
 GET /takah/:id
 ```
 
-### Example
-
-```text
-GET /takah/1
-```
-
 ### Status
 
 * Success
@@ -306,6 +300,78 @@ DELETE /config-nomor/:id
 
 ---
 
+# Template Surat Testing
+
+## Get All Template Surat
+
+### Endpoint
+
+```http
+GET /template-surat
+```
+
+### Status
+
+* Success
+
+---
+
+## Get Template Surat By ID
+
+### Endpoint
+
+```http
+GET /template-surat/:id
+```
+
+### Status
+
+* Success
+
+---
+
+## Create Template Surat
+
+### Endpoint
+
+```http
+POST /template-surat
+```
+
+### Status
+
+* Success
+
+---
+
+## Update Template Surat
+
+### Endpoint
+
+```http
+PUT /template-surat/:id
+```
+
+### Status
+
+* Success
+
+---
+
+## Delete Template Surat
+
+### Endpoint
+
+```http
+DELETE /template-surat/:id
+```
+
+### Status
+
+* Success
+
+---
+
 # Surat Keluar Testing
 
 ## Get All Surat Keluar
@@ -375,6 +441,78 @@ PUT /surat-keluar/:id
 
 ```http
 DELETE /surat-keluar/:id
+```
+
+### Status
+
+* Success
+
+---
+
+# Surat Masuk Testing
+
+## Get All Surat Masuk
+
+### Endpoint
+
+```http
+GET /surat-masuk
+```
+
+### Status
+
+* Success
+
+---
+
+## Get Surat Masuk By ID
+
+### Endpoint
+
+```http
+GET /surat-masuk/:id
+```
+
+### Status
+
+* Success
+
+---
+
+## Create Surat Masuk
+
+### Endpoint
+
+```http
+POST /surat-masuk
+```
+
+### Status
+
+* Success
+
+---
+
+## Update Surat Masuk
+
+### Endpoint
+
+```http
+PUT /surat-masuk/:id
+```
+
+### Status
+
+* Success
+
+---
+
+## Delete Surat Masuk
+
+### Endpoint
+
+```http
+DELETE /surat-masuk/:id
 ```
 
 ### Status
@@ -515,18 +653,21 @@ DELETE /monitoring/:id
 
 # Current Testing Status
 
-| Module               | Status | Notes                   |
-| -------------------- | ------ | ----------------------- |
-| Health Check         | Done   | Endpoint berjalan       |
-| Authentication       | Done   | JWT login berhasil      |
-| Master Takah         | Done   | CRUD berjalan           |
-| Surat                | Done   | CRUD berjalan           |
-| Config Nomor Surat   | Done   | CRUD berjalan           |
-| Surat Keluar         | Done   | CRUD berjalan           |
-| Generate Nomor Surat | Done   | Berjalan otomatis       |
-| Approval Surat       | Done   | CRUD berjalan           |
-| Monitoring Surat     | Done   | CRUD berjalan           |
-| Database Testing     | Todo   | Database belum tersedia |
+| Module                   | Status | Notes                   |
+| ------------------------ | ------ | ----------------------- |
+| Health Check             | Done   | Endpoint berjalan       |
+| Authentication           | Done   | JWT login berhasil      |
+| Master Takah             | Done   | CRUD berjalan           |
+| Surat                    | Done   | CRUD berjalan           |
+| Config Nomor Surat       | Done   | CRUD berjalan           |
+| Template Surat           | Done   | CRUD berjalan           |
+| Surat Keluar             | Done   | CRUD berjalan           |
+| Generate Nomor Surat     | Done   | Berjalan otomatis       |
+| Surat Masuk              | Done   | CRUD berjalan           |
+| Approval Surat           | Done   | CRUD berjalan           |
+| Monitoring Surat         | Done   | CRUD berjalan           |
+| Database Testing         | Todo   | Database belum tersedia |
+| Password Hashing Testing | Todo   | Planned                 |
 
 ---
 
@@ -535,10 +676,10 @@ DELETE /monitoring/:id
 Testing yang direncanakan selanjutnya:
 
 * Database integration testing
+* Password hashing testing
+* Authorization testing
 * Validation testing
 * Error handling testing
 * File upload testing
-* Surat masuk testing
-* Template surat testing
 * Load testing
 * API documentation testing

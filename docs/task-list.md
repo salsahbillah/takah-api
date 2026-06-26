@@ -66,7 +66,7 @@ Fokus utama:
 | -------------------- | ------- | ------------------------------- |
 | CRUD Surat           | Done    | Dummy module                    |
 | Surat keluar         | Done    | CRUD surat keluar tersedia      |
-| Surat masuk          | Todo    | Planned                         |
+| Surat masuk          | Done    | CRUD surat masuk tersedia       |
 | Monitoring surat     | Done    | CRUD monitoring tersedia        |
 | Approval surat       | Done    | CRUD approval tersedia          |
 | Approval tracking    | Partial | Riwayat approval dasar tersedia |
@@ -92,11 +92,11 @@ Contoh format:
 
 ## 6. Template Surat
 
-| Task                | Status | Notes   |
-| ------------------- | ------ | ------- |
-| CRUD template surat | Todo   | Planned |
-| Parameter surat     | Todo   | Planned |
-| Dynamic template    | Todo   | Planned |
+| Task                | Status | Notes               |
+| ------------------- | ------ | ------------------- |
+| CRUD template surat | Done   | CRUD dummy tersedia |
+| Parameter surat     | Todo   | Planned             |
+| Dynamic template    | Todo   | Planned             |
 
 ---
 
@@ -136,6 +136,8 @@ Contoh format:
 | Master Takah testing       | Done   | Success                 |
 | Config Nomor Surat testing | Done   | Success                 |
 | Surat Keluar testing       | Done   | Success                 |
+| Surat Masuk testing        | Done   | Success                 |
+| Template Surat testing     | Done   | Success                 |
 | Approval Surat testing     | Done   | Success                 |
 | Monitoring Surat testing   | Done   | Success                 |
 | Database testing           | Todo   | Database belum tersedia |
@@ -150,10 +152,9 @@ Prioritas development saat ini:
 1. Finalisasi dokumentasi project
 2. Menyusun SQL schema
 3. Integrasi database MySQL
-4. Implementasi Surat Masuk
-5. Implementasi Template Surat
-6. Password hashing
-7. Authorization role admin dan user
+4. Password hashing
+5. Authorization role admin dan user
+6. Integrasi seluruh module dengan database
 
 ---
 
@@ -181,4 +182,4 @@ Current status:
 Project masih dalam tahap development awal dan masih menggunakan dummy data.
 ```
 
-Backend REST API utama sudah berjalan, termasuk Authentication, Master Takah, Config Nomor Surat, Surat Keluar, Approval Surat, dan Monitoring Surat. Dokumentasi project sedang diperbarui sebagai persiapan integrasi database dan pengembangan fitur lanjutan.
+Backend REST API utama telah berhasil diimplementasikan, meliputi Authentication, Master Takah, Config Nomor Surat, Template Surat, Surat Keluar, Surat Masuk, Approval Surat, dan Monitoring Surat. Seluruh endpoint utama telah berhasil diuji menggunakan Postman. Tahap pengembangan berikutnya difokuskan pada integrasi database MySQL, password hashing, authorization role, serta penyempurnaan fitur lanjutan.

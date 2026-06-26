@@ -1,31 +1,22 @@
-# SOP User - Takah API
+SOP User - Takah API
 
 Dokumen ini menjelaskan prosedur penggunaan aplikasi Takah dari sisi user/staff.
 
----
-
-# Tujuan
+Tujuan
 
 SOP User dibuat untuk membantu user dalam menggunakan aplikasi Takah untuk pembuatan dan monitoring surat.
 
----
-
-# Hak Akses User
+Hak Akses User
 
 User memiliki akses untuk:
 
-* Login ke sistem
-* Membuat surat
-* Melihat surat sendiri
-* Monitoring status surat
-* Melihat riwayat surat
-* Melihat status approval surat
-
----
-
-# Flow User
-
-```text id="l7r5d3"
+Login ke sistem
+Membuat surat
+Melihat surat sendiri
+Monitoring status surat
+Melihat riwayat surat
+Melihat status approval surat
+Flow User
 User login
 ↓
 User memilih jenis surat
@@ -43,155 +34,109 @@ User mengirim surat untuk approval
 Surat diproses approver
 ↓
 User monitoring status surat
-```
-
----
-
-# 1. Login User
-
-## Endpoint
-
-```http id="w6c2az"
+1. Login User
+Endpoint
 POST /api/v1/auth/login
-```
-
-## Request
-
-```json id="b0vnwo"
+Request
 {
   "email": "admin@takah.com",
   "password": "password123"
 }
-```
-
-## Success Response
-
-```json id="a98j2h"
+Success Response
 {
   "message": "Login berhasil",
   "data": {
-    "token": "dummy-token"
+    "token": "jwt-token"
   }
 }
-```
-
----
-
-# 2. Membuat Surat
+2. Membuat Surat
 
 User dapat membuat surat baru berdasarkan jenis surat yang tersedia pada Master Takah.
 
 Contoh jenis surat:
 
-* SKET
-* SKK
-* UND
-* SP
-
----
-
-# 3. Memilih Template Surat
+SKET
+SKK
+UND
+SP
+3. Memilih Template Surat
 
 User memilih template surat sesuai kebutuhan.
 
 Contoh:
 
-* Template Surat Undangan
-* Template Surat Keterangan
-* Template Surat Peringatan
+Template Surat Undangan
+Template Surat Keterangan
+Template Surat Peringatan
 
 Tujuan:
 
-* Mempermudah pembuatan surat
-* Mengurangi penulisan manual
-* Menjaga format surat tetap konsisten
-
----
-
-# 4. Generate Nomor Surat
+Mempermudah pembuatan surat
+Mengurangi penulisan manual
+Menjaga format surat tetap konsisten
+4. Generate Nomor Surat
 
 Sistem akan membuat nomor surat otomatis.
 
 Contoh format:
 
-```text id="u3y9eq"
 001/UND/CBN/052026
-```
 
 Keterangan:
 
-* `001` = nomor urut
-* `UND` = kode jenis surat
-* `CBN` = kode perusahaan/divisi
-* `052026` = bulan dan tahun
+001 = nomor urut
+UND = kode jenis surat
+CBN = kode perusahaan/divisi
+052026 = bulan dan tahun
 
 Aturan:
 
-* Nomor bertambah otomatis
-* Reset setiap bulan
-
----
-
-# 5. Monitoring Surat
+Nomor bertambah otomatis
+Nomor dibuat berdasarkan Config Nomor Surat
+5. Monitoring Surat
 
 User dapat melihat:
 
-* Status surat
-* Riwayat surat
-* Surat pending
-* Surat approved
-* Surat rejected
-
-Contoh status:
-
-* draft
-* pending
-* approved
-* rejected
+Status surat
+Riwayat surat
+Surat pending
+Surat approved
+Surat rejected
 
 User juga dapat melihat:
 
-* Status approval surat
-* Riwayat review surat
-* Catatan approval/reject
-
----
-
-# 6. Riwayat Surat
+Status approval surat
+Riwayat review surat
+Catatan approval/reject
+6. Riwayat Surat
 
 Riwayat surat digunakan untuk melihat surat yang pernah dibuat user.
 
 Informasi yang ditampilkan:
 
-* Nomor surat
-* Jenis surat
-* Status surat
-* Tanggal surat
-
----
-
-# Current Status
+Nomor surat
+Jenis surat
+Status surat
+Tanggal surat
+Current Status
 
 Status implementasi saat ini:
 
-# Current Status
-
-| Feature              | Status |
-| -------------------- | ------ |
-| JWT Authentication   | Done   |
-| CRUD Surat           | Done   |
-| Generate Nomor Surat | Done   |
-| Surat Keluar         | Done   |
-| Monitoring Surat     | Done   |
-| Approval Tracking    | Done   |
-| Database Integration | Todo   |
-
----
-
-# Future Development
+Feature	Status
+JWT Authentication	Done
+CRUD Surat	Done
+Template Surat	Done
+Generate Nomor Surat	Done
+Surat Keluar	Done
+Surat Masuk	Done
+Monitoring Surat	Done
+Approval Tracking	Done
+Database Integration	Todo
+Future Development
 
 Pengembangan user module selanjutnya:
 
-* Upload file surat
-* Template surat
-* Surat masuk
+Upload file surat
+MySQL integration
+Password hashing
+Authorization role
