@@ -72,7 +72,7 @@ POST /api/v1/auth/login
 {
   "message": "Login berhasil",
   "data": {
-    "token": "dummy-token"
+    "token": "jwt-token"
   }
 }
 ```
@@ -88,13 +88,6 @@ Admin dapat:
 * Menghapus jenis surat
 * Melihat daftar jenis surat
 
-Contoh jenis surat:
-
-* SKET
-* SKK
-* UND
-* SP
-
 ---
 
 # 3. Manage Template Surat
@@ -104,12 +97,7 @@ Admin dapat:
 * Membuat template surat
 * Mengubah template surat
 * Menghapus template surat
-
-Template surat digunakan untuk:
-
-* Surat Undangan
-* Surat Keterangan
-* Surat Peringatan
+* Melihat daftar template surat
 
 ---
 
@@ -127,15 +115,23 @@ Aturan:
 
 * Nomor otomatis bertambah
 * Reset mengikuti config yang digunakan
-
-Contoh:
-
-* monthly → reset setiap bulan
-* yearly → reset setiap tahun
+* Config nomor surat terhubung dengan Master Takah
 
 ---
 
-# 5. Manage Surat Masuk
+# 5. Manage Surat Keluar
+
+Admin dapat:
+
+* Melihat data surat keluar
+* Membuat surat keluar
+* Mengubah data surat keluar
+* Menghapus data surat keluar
+* Melihat status surat keluar
+
+---
+
+# 6. Manage Surat Masuk
 
 Admin dapat:
 
@@ -160,7 +156,7 @@ Surat masuk tercatat pada sistem
 
 ---
 
-# 6. Monitoring Surat
+# 7. Monitoring Surat
 
 Admin dapat melihat:
 
@@ -182,7 +178,7 @@ Contoh status:
 
 ---
 
-# 7. Approval Surat
+# 8. Approval Surat
 
 Flow approval:
 
@@ -215,19 +211,18 @@ Admin dapat:
 
 Status implementasi saat ini:
 
-# Current Status
-
 | Feature              | Status |
 | -------------------- | ------ |
 | JWT Authentication   | Done   |
 | CRUD Master Takah    | Done   |
 | CRUD Surat           | Done   |
 | Config Nomor Surat   | Done   |
+| Template Surat       | Done   |
 | Generate Nomor Surat | Done   |
 | Surat Keluar         | Done   |
+| Surat Masuk          | Done   |
 | Approval Surat       | Done   |
 | Monitoring Surat     | Done   |
-| Surat Masuk          | Todo   |
 | Database Integration | Todo   |
 
 ---
@@ -237,6 +232,8 @@ Status implementasi saat ini:
 Pengembangan admin selanjutnya:
 
 * MySQL integration
-* Surat masuk
-* Template surat
 * Upload file surat
+* Password hashing
+* Authorization role
+
+---

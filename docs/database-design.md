@@ -42,13 +42,6 @@ Digunakan untuk menyimpan data user aplikasi.
 
 Digunakan untuk menyimpan data master jenis surat.
 
-Contoh:
-
-* SKET
-* SKK
-* UND
-* SP
-
 | Field        | Type      | Notes                |
 | ------------ | --------- | -------------------- |
 | id           | bigint    | Primary key          |
@@ -67,14 +60,6 @@ Contoh:
 
 Digunakan untuk konfigurasi format nomor surat otomatis.
 
-Setiap konfigurasi nomor surat memiliki relasi dengan Master Takah sehingga setiap jenis surat dapat menggunakan format nomor yang berbeda.
-
-Contoh format:
-
-```text id="u1gt6l"
-001/UND/CBN/052026
-```
-
 | Field         | Type      | Notes                         |
 | ------------- | --------- | ----------------------------- |
 | id            | bigint    | Primary key                   |
@@ -84,11 +69,6 @@ Contoh format:
 | reset_type    | varchar   | monthly / yearly              |
 | last_number   | int       | Nomor terakhir yang digunakan |
 | created_at    | timestamp | Waktu dibuat                  |
-
-Keterangan:
-
-* monthly → reset setiap bulan
-* yearly → reset setiap tahun
 
 ---
 
@@ -139,13 +119,6 @@ Digunakan untuk menyimpan proses approval surat keluar.
 | notes           | text      | Catatan approval              |
 | approved_at     | timestamp | Waktu approval                |
 
-Flow approval:
-
-* Surat dibuat user
-* Surat dikirim ke approver
-* Approver melakukan review
-* Status approval tersimpan
-
 ---
 
 ## 7. surat_masuk
@@ -162,6 +135,7 @@ Digunakan untuk menyimpan surat masuk dari pihak luar perusahaan atau instansi.
 | file_surat    | varchar   | File scan surat  |
 | tanggal_surat | date      | Tanggal surat    |
 | keterangan    | text      | Keterangan surat |
+| status        | varchar   | received         |
 | created_by    | bigint    | User input       |
 | created_at    | timestamp | Waktu dibuat     |
 
@@ -185,7 +159,7 @@ Digunakan untuk monitoring status surat.
 
 # Table Relationship
 
-```text id="oqmkzh"
+```text
 master_takah
 │
 ├── template_surat
@@ -226,7 +200,7 @@ Nomor surat dibuat berdasarkan:
 
 Contoh:
 
-```text id="3g38e9"
+```text
 001/UND/CBN/052026
 002/UND/CBN/052026
 001/UND/CBN/062026

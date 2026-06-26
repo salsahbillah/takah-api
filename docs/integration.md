@@ -51,6 +51,12 @@ Master Takah digunakan oleh:
 * Monitoring Surat
 * Approval Surat
 
+Status saat ini:
+
+* CRUD Master Takah tersedia
+* Data masih menggunakan dummy data
+* Database belum terintegrasi
+
 ---
 
 # 2. Template Surat Integration
@@ -76,8 +82,9 @@ Contoh:
 
 Status saat ini:
 
-* Belum diimplementasikan
-* Masih tahap perencanaan
+* CRUD Template Surat tersedia
+* Relasi dengan Master Takah tersedia
+* Data template masih menggunakan dummy data
 
 ---
 
@@ -86,10 +93,6 @@ Status saat ini:
 Config nomor surat digunakan untuk generate nomor otomatis.
 
 Config nomor surat memiliki relasi dengan Master Takah.
-
-Setiap jenis surat pada Master Takah dapat memiliki format nomor surat yang berbeda sesuai kebutuhan perusahaan atau instansi.
-
-Config nomor surat juga digunakan untuk menentukan aturan reset nomor surat.
 
 Flow:
 
@@ -162,6 +165,7 @@ Status saat ini:
 * CRUD Surat Keluar tersedia
 * Nomor surat dibuat otomatis berdasarkan Config Nomor Surat
 * Status awal surat adalah draft
+* Data masih menggunakan dummy data
 
 ---
 
@@ -196,6 +200,7 @@ Status saat ini:
 
 * CRUD Approval Surat tersedia
 * Data approver dan catatan approval dapat disimpan
+* Data masih menggunakan dummy data
 
 ---
 
@@ -226,8 +231,9 @@ Tujuan:
 
 Status saat ini:
 
-* Belum diimplementasikan
-* Masih tahap perencanaan
+* CRUD Surat Masuk tersedia
+* Data surat masuk masih menggunakan dummy data
+* Upload file surat belum diimplementasikan
 
 ---
 
@@ -286,6 +292,7 @@ Status saat ini:
 * Monitoring menyimpan status surat
 * Monitoring menyimpan approver terakhir
 * Monitoring menyimpan catatan approval terakhir
+* Data masih menggunakan dummy data
 
 ---
 
@@ -298,6 +305,8 @@ Saat ini:
 * Authentication menggunakan JWT
 * Login menghasilkan token JWT
 * Middleware digunakan untuk memvalidasi token pada endpoint yang dilindungi
+* Password hashing belum diimplementasikan
+* Role authorization admin/user belum diimplementasikan
 
 Role plan:
 
@@ -307,6 +316,8 @@ Role plan:
 Admin:
 
 * Manage master data
+* Manage template surat
+* Manage config nomor surat
 * Manage surat masuk
 * Monitoring semua surat
 * Approval surat
@@ -347,13 +358,13 @@ Database yang direncanakan:
 | Surat                | Done   | CRUD dummy tersedia                  |
 | Authentication       | Done   | JWT authentication tersedia          |
 | Config Nomor Surat   | Done   | Relasi dengan Master Takah tersedia  |
+| Template Surat       | Done   | CRUD template surat tersedia         |
 | Generate Nomor Surat | Done   | Helper generate nomor surat tersedia |
 | Surat Keluar         | Done   | Generate nomor otomatis berjalan     |
+| Surat Masuk          | Done   | CRUD surat masuk tersedia            |
 | Approval Surat       | Done   | CRUD approval tersedia               |
 | Monitoring Surat     | Done   | CRUD monitoring tersedia             |
 | Database             | Todo   | Belum terintegrasi MySQL             |
-| Template Surat       | Todo   | Belum diimplementasikan              |
-| Surat Masuk          | Todo   | Belum diimplementasikan              |
 
 ---
 
@@ -363,9 +374,6 @@ Pengembangan integrasi selanjutnya:
 
 * MySQL integration
 * Upload file surat
-* Template surat
-* Surat masuk
+* Password hashing
+* Authorization role
 * Approval multi level
-* Notification system
-* Audit log
-* Dashboard monitoring
