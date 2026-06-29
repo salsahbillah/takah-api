@@ -4,162 +4,129 @@ import (
 	"net/http"
 	"strconv"
 
-	"takah-api/internal/model"
+	"takah-api/internal/database"
 
 	"github.com/gin-gonic/gin"
 )
 
-// GET /surat
 func GetAllSurat(c *gin.Context) {
-	surat := []model.SuratResponse{
-		{
-			ID:          1,
-			NomorSurat: "001/HR/2026",
-			Judul:       "Surat Undangan Rapat",
-			Pengirim:    "HRD",
-			Penerima:    "Seluruh Karyawan",
-			Status:      "masuk",
-		},
-		{
-			ID:          2,
-			NomorSurat: "002/ADM/2026",
-			Judul:       "Surat Pemberitahuan",
-			Pengirim:    "Administrasi",
-			Penerima:    "Divisi Keuangan",
-			Status:      "keluar",
-		},
-	}
+	var totalSuratKeluar int
+	var totalSuratMasuk int
+	var totalDraft int
+	var totalPending int
+	var totalApproved int
+	var totalRejected int
+	var totalCompleted int
+	var totalMonitoring int
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Data surat berhasil diambil",
-		"data":    surat,
-	})
-}
-
-// POST /surat
-func CreateSurat(c *gin.Context) {
-	var request model.SuratRequest
-
-	if err := c.ShouldBindJSON(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Data surat wajib diisi dengan benar",
-		})
-		return
-	}
-
-	response := model.SuratResponse{
-		ID:          3,
-		NomorSurat: request.NomorSurat,
-		Judul:       request.Judul,
-		Pengirim:    request.Pengirim,
-		Penerima:    request.Penerima,
-		Status:      request.Status,
-	}
-
-	c.JSON(http.StatusCreated, gin.H{
-		"message": "Data surat berhasil dibuat",
-		"data":    response,
-	})
-}
-
-// GET /surat
-func GetSuratByID(c *gin.Context) {
-	idParam := c.Param("id")
-
-	id, err := strconv.Atoi(idParam)
+	err := database.DB.QueryRow(`SELECT COUNT(*) FROM surat_keluar`).Scan(&totalSuratKeluar)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "ID surat tidak valid",
-		})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Gagal menghitung surat keluar", "error": err.Error()})
 		return
 	}
 
-	suratList := []model.SuratResponse{
-		{
-			ID:          1,
-			NomorSurat: "001/HR/2026",
-			Judul:       "Surat Undangan Rapat",
-			Pengirim:    "HRD",
-			Penerima:    "Seluruh Karyawan",
-			Status:      "masuk",
-		},
-		{
-			ID:          2,
-			NomorSurat: "002/ADM/2026",
-			Judul:       "Surat Pemberitahuan",
-			Pengirim:    "Administrasi",
-			Penerima:    "Divisi Keuangan",
-			Status:      "keluar",
-		},
-	}
-
-	for _, surat := range suratList {
-		if surat.ID == id {
-			c.JSON(http.StatusOK, gin.H{
-				"message": "Data surat berhasil diambil",
-				"data":    surat,
-			})
-			return
-		}
-	}
-
-	c.JSON(http.StatusNotFound, gin.H{
-		"message": "Data surat tidak ditemukan",
-	})
-}
-
-// PUT /surat
-func UpdateSurat(c *gin.Context) {
-	idParam := c.Param("id")
-
-	id, err := strconv.Atoi(idParam)
+	err = database.DB.QueryRow(`SELECT COUNT(*) FROM surat_masuk`).Scan(&totalSuratMasuk)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "ID surat tidak valid",
-		})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Gagal menghitung surat masuk", "error": err.Error()})
 		return
 	}
 
-	var request model.SuratRequest
-
-	if err := c.ShouldBindJSON(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Data surat wajib diisi dengan benar",
-		})
-		return
-	}
-
-	response := model.SuratResponse{
-		ID:          id,
-		NomorSurat: request.NomorSurat,
-		Judul:       request.Judul,
-		Pengirim:    request.Pengirim,
-		Penerima:    request.Penerima,
-		Status:      request.Status,
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Data surat berhasil diupdate",
-		"data":    response,
-	})
-}
-
-// DELETE /surat
-func DeleteSurat(c *gin.Context) {
-	idParam := c.Param("id")
-
-	id, err := strconv.Atoi(idParam)
+	err = database.DB.QueryRow(`SELECT COUNT(*) FROM surat_keluar WHERE status = 'draft'`).Scan(&totalDraft)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "ID surat tidak valid",
-		})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Gagal menghitung surat draft", "error": err.Error()})
+		return
+	}
+
+	err = database.DB.QueryRow(`SELECT COUNT(*) FROM surat_keluar WHERE status = 'pending'`).Scan(&totalPending)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Gagal menghitung surat pending", "error": err.Error()})
+		return
+	}
+
+	err = database.DB.QueryRow(`SELECT COUNT(*) FROM surat_keluar WHERE status = 'approved'`).Scan(&totalApproved)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Gagal menghitung surat approved", "error": err.Error()})
+		return
+	}
+
+	err = database.DB.QueryRow(`SELECT COUNT(*) FROM surat_keluar WHERE status = 'rejected'`).Scan(&totalRejected)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Gagal menghitung surat rejected", "error": err.Error()})
+		return
+	}
+
+	err = database.DB.QueryRow(`SELECT COUNT(*) FROM surat_keluar WHERE status = 'completed'`).Scan(&totalCompleted)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Gagal menghitung surat completed", "error": err.Error()})
+		return
+	}
+
+	err = database.DB.QueryRow(`SELECT COUNT(*) FROM monitoring_surat`).Scan(&totalMonitoring)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Gagal menghitung monitoring surat", "error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Data surat berhasil dihapus",
+		"message": "Summary data surat berhasil diambil",
 		"data": gin.H{
-			"id": id,
+			"total_surat_keluar": totalSuratKeluar,
+			"total_surat_masuk":  totalSuratMasuk,
+			"total_semua_surat":  totalSuratKeluar + totalSuratMasuk,
+			"status_surat_keluar": gin.H{
+				"draft":     totalDraft,
+				"pending":   totalPending,
+				"approved":  totalApproved,
+				"rejected":  totalRejected,
+				"completed": totalCompleted,
+			},
+			"total_monitoring": totalMonitoring,
+		},
+	})
+}
+
+func GetSuratByID(c *gin.Context) {
+	_, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "ID surat tidak valid"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Detail surat dipisahkan berdasarkan jenis surat",
+		"data": gin.H{
+			"surat_keluar": "/api/v1/surat-keluar/:id",
+			"surat_masuk":  "/api/v1/surat-masuk/:id",
+		},
+	})
+}
+
+func CreateSurat(c *gin.Context) {
+	c.JSON(http.StatusBadRequest, gin.H{
+		"message": "CRUD surat dipisahkan berdasarkan jenis surat",
+		"data": gin.H{
+			"buat_surat_keluar": "/api/v1/surat-keluar",
+			"buat_surat_masuk":  "/api/v1/surat-masuk",
+		},
+	})
+}
+
+func UpdateSurat(c *gin.Context) {
+	c.JSON(http.StatusBadRequest, gin.H{
+		"message": "Update surat dipisahkan berdasarkan jenis surat",
+		"data": gin.H{
+			"update_surat_keluar": "/api/v1/surat-keluar/:id",
+			"update_surat_masuk":  "/api/v1/surat-masuk/:id",
+		},
+	})
+}
+
+func DeleteSurat(c *gin.Context) {
+	c.JSON(http.StatusBadRequest, gin.H{
+		"message": "Delete surat dipisahkan berdasarkan jenis surat",
+		"data": gin.H{
+			"delete_surat_keluar": "/api/v1/surat-keluar/:id",
+			"delete_surat_masuk":  "/api/v1/surat-masuk/:id",
 		},
 	})
 }

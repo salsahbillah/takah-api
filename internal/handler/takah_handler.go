@@ -4,41 +4,65 @@ import (
 	"net/http"
 	"strconv"
 
+	"takah-api/internal/database"
 	"takah-api/internal/model"
 
 	"github.com/gin-gonic/gin"
 )
 
-
-var takahData = []model.TakahResponse{
-	{
-		ID:          1,
-		Code:        "SKET",
-		Name:        "Surat Keterangan",
-		Description: "Jenis surat keterangan",
-		Order:       1,
-		CreatedBy:   "M Yogi Darusmawan",
-		CreatedTime: "15-07-2024 22:00",
-		UpdatedBy:   "M Yogi Darusmawan",
-		UpdatedTime: "15-07-2024 22:00",
-	},
-	{
-		ID:          2,
-		Code:        "SKK",
-		Name:        "Surat Keterangan Kerja",
-		Description: "Jenis surat keterangan kerja",
-		Order:       2,
-		CreatedBy:   "M Yogi Darusmawan",
-		CreatedTime: "15-07-2024 22:00",
-		UpdatedBy:   "M Yogi Darusmawan",
-		UpdatedTime: "15-07-2024 22:00",
-	},
-}
-
 func GetAllTakah(c *gin.Context) {
+	rows, err := database.DB.Query(`
+		SELECT 
+			id, code, name, description, sort_order, created_by, updated_by, created_at, updated_at
+		FROM master_takah
+		ORDER BY sort_order ASC
+	`)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Gagal mengambil data takah",
+			"error":   err.Error(),
+		})
+		return
+	}
+	defer rows.Close()
+
+	var takahList []model.TakahResponse
+
+	for rows.Next() {
+		var takah model.TakahResponse
+		var createdBy, updatedBy int
+		var createdAt, updatedAt string
+
+		err := rows.Scan(
+			&takah.ID,
+			&takah.Code,
+			&takah.Name,
+			&takah.Description,
+			&takah.Order,
+			&createdBy,
+			&updatedBy,
+			&createdAt,
+			&updatedAt,
+		)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": "Gagal membaca data takah",
+				"error":   err.Error(),
+			})
+			return
+		}
+
+		takah.CreatedBy = strconv.Itoa(createdBy)
+		takah.UpdatedBy = strconv.Itoa(updatedBy)
+		takah.CreatedTime = createdAt
+		takah.UpdatedTime = updatedAt
+
+		takahList = append(takahList, takah)
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Data takah berhasil diambil",
-		"data":    takahData,
+		"data":    takahList,
 	})
 }
 
@@ -51,18 +75,42 @@ func GetTakahByID(c *gin.Context) {
 		return
 	}
 
-	for _, takah := range takahData {
-		if takah.ID == id {
-			c.JSON(http.StatusOK, gin.H{
-				"message": "Data takah berhasil diambil",
-				"data":    takah,
-			})
-			return
-		}
+	var takah model.TakahResponse
+	var createdBy, updatedBy int
+	var createdAt, updatedAt string
+
+	err = database.DB.QueryRow(`
+		SELECT 
+			id, code, name, description, sort_order, created_by, updated_by, created_at, updated_at
+		FROM master_takah
+		WHERE id = ?
+	`, id).Scan(
+		&takah.ID,
+		&takah.Code,
+		&takah.Name,
+		&takah.Description,
+		&takah.Order,
+		&createdBy,
+		&updatedBy,
+		&createdAt,
+		&updatedAt,
+	)
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "Data takah tidak ditemukan",
+		})
+		return
 	}
 
-	c.JSON(http.StatusNotFound, gin.H{
-		"message": "Data takah tidak ditemukan",
+	takah.CreatedBy = strconv.Itoa(createdBy)
+	takah.UpdatedBy = strconv.Itoa(updatedBy)
+	takah.CreatedTime = createdAt
+	takah.UpdatedTime = updatedAt
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Data takah berhasil diambil",
+		"data":    takah,
 	})
 }
 
@@ -72,27 +120,53 @@ func CreateTakah(c *gin.Context) {
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "Data takah wajib diisi dengan benar",
+			"error":   err.Error(),
 		})
 		return
 	}
 
-	response := model.TakahResponse{
-		ID:          len(takahData) + 1,
-		Code:        request.Code,
-		Name:        request.Name,
-		Description: request.Description,
-		Order:       request.Order,
-		CreatedBy:   "Admin",
-		CreatedTime: "2026-05-04 15:00",
-		UpdatedBy:   "Admin",
-		UpdatedTime: "2026-05-04 15:00",
+	result, err := database.DB.Exec(`
+		INSERT INTO master_takah 
+			(code, name, description, sort_order, created_by, updated_by)
+		VALUES 
+			(?, ?, ?, ?, ?, ?)
+	`,
+		request.Code,
+		request.Name,
+		request.Description,
+		request.Order,
+		1,
+		1,
+	)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Gagal membuat data takah",
+			"error":   err.Error(),
+		})
+		return
 	}
 
-	takahData = append(takahData, response)
+	id, err := result.LastInsertId()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Data berhasil dibuat, tetapi ID gagal dibaca",
+			"error":   err.Error(),
+		})
+		return
+	}
 
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Data takah berhasil dibuat",
-		"data":    response,
+		"data": gin.H{
+			"id":          id,
+			"code":        request.Code,
+			"name":        request.Name,
+			"description": request.Description,
+			"order":       request.Order,
+			"created_by":  1,
+			"updated_by":  1,
+		},
 	})
 }
 
@@ -110,25 +184,50 @@ func UpdateTakah(c *gin.Context) {
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "Data takah wajib diisi dengan benar",
+			"error":   err.Error(),
 		})
 		return
 	}
 
-	response := model.TakahResponse{
-		ID:          id,
-		Code:        request.Code,
-		Name:        request.Name,
-		Description: request.Description,
-		Order:       request.Order,
-		CreatedBy:   "Admin",
-		CreatedTime: "2026-05-04 15:00",
-		UpdatedBy:   "Admin",
-		UpdatedTime: "2026-05-04 15:00",
+	result, err := database.DB.Exec(`
+		UPDATE master_takah
+		SET code = ?, name = ?, description = ?, sort_order = ?, updated_by = ?
+		WHERE id = ?
+	`,
+		request.Code,
+		request.Name,
+		request.Description,
+		request.Order,
+		1,
+		id,
+	)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Gagal mengupdate data takah",
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "Data takah tidak ditemukan",
+		})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Data takah berhasil diupdate",
-		"data":    response,
+		"data": gin.H{
+			"id":          id,
+			"code":        request.Code,
+			"name":        request.Name,
+			"description": request.Description,
+			"order":       request.Order,
+			"updated_by":  1,
+		},
 	})
 }
 
@@ -137,6 +236,27 @@ func DeleteTakah(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "ID takah tidak valid",
+		})
+		return
+	}
+
+	result, err := database.DB.Exec(`
+		DELETE FROM master_takah
+		WHERE id = ?
+	`, id)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Gagal menghapus data takah",
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "Data takah tidak ditemukan",
 		})
 		return
 	}

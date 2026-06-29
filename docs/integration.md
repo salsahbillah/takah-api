@@ -1,12 +1,12 @@
 # Integration Documentation - Takah API
 
-Dokumen ini menjelaskan integrasi antar module pada aplikasi Takah.
+Dokumen ini menjelaskan integrasi antar modul pada aplikasi Takah.
 
 ---
 
 # Tujuan Integrasi
 
-Integrasi dibuat agar setiap module dalam aplikasi Takah dapat saling terhubung dan digunakan dalam satu alur sistem administrasi surat.
+Integrasi dibuat agar setiap modul dalam aplikasi Takah dapat saling terhubung sehingga proses administrasi surat dapat berjalan secara terstruktur mulai dari pembuatan surat hingga proses monitoring.
 
 ---
 
@@ -14,234 +14,306 @@ Integrasi dibuat agar setiap module dalam aplikasi Takah dapat saling terhubung 
 
 ```text
 Master Takah
-↓
-Template Surat
-↓
-Config Nomor Surat
-↓
-Surat Keluar
-↓
-Approval Surat
-↓
-Monitoring Surat
+│
+├── Config Nomor Surat
+│
+├── Template Surat
+│   │
+│   └── Parameter Surat
+│
+└── Surat Keluar
+      │
+      ├── Approval Surat
+      │
+      └── Monitoring Surat
 
 Surat Masuk
-↓
-Monitoring Surat
+│
+└── Monitoring Surat
 ```
 
 ---
 
 # 1. Master Takah Integration
 
-Master Takah digunakan sebagai data master jenis surat.
+Master Takah digunakan sebagai data utama jenis surat yang tersedia pada sistem.
 
-Contoh:
+Contoh data:
 
-* SKET
-* SKK
-* UND
-* SP
+* SKET → Surat Keterangan
+* SKK → Surat Keterangan Kerja
+* SP → Surat Peringatan
+* SIK → Surat Izin Kegiatan
+* UND → Surat Undangan
+* MEM → Memorandum
+* ND → Nota Dinas
 
 Master Takah digunakan oleh:
 
+* Config Nomor Surat
 * Template Surat
-* Generate Nomor Surat
 * Surat Keluar
-* Monitoring Surat
-* Approval Surat
+
+Master Takah menjadi acuan agar setiap jenis surat memiliki konfigurasi nomor, template, dan proses surat yang sesuai.
 
 Status saat ini:
 
-* CRUD Master Takah tersedia
-* Data masih menggunakan dummy data
-* Database belum terintegrasi
+* CRUD Master Takah telah menggunakan MySQL.
+* Relasi dengan modul lain telah diterapkan.
 
 ---
 
 # 2. Template Surat Integration
 
-Template surat terhubung dengan Master Takah.
+Template Surat terhubung langsung dengan Master Takah.
+
+Template digunakan sebagai format dasar isi surat berdasarkan jenis surat yang dipilih.
 
 Flow:
 
 ```text
-Master Takah dipilih
+User memilih Master Takah
 ↓
-Template surat digunakan
+Sistem membaca Template Surat
 ↓
-User mengisi parameter surat
+Sistem membaca Parameter Surat
+↓
+User mengisi data surat
 ↓
 Surat dibuat
 ```
 
 Contoh:
 
-* Surat Undangan menggunakan template UND
-* Surat Keterangan menggunakan template SKET
+* Surat Undangan menggunakan template UND.
+* Surat Keterangan menggunakan template SKET.
 
 Status saat ini:
 
-* CRUD Template Surat tersedia
-* Relasi dengan Master Takah tersedia
-* Data template masih menggunakan dummy data
+* CRUD Template Surat telah menggunakan MySQL.
+* Template telah berelasi dengan Master Takah.
+* Template digunakan saat proses pembuatan Surat Keluar.
 
 ---
 
-# 3. Config Nomor Surat Integration
+# 3. Parameter Surat Integration
 
-Config nomor surat digunakan untuk generate nomor otomatis.
+Parameter Surat digunakan untuk menentukan field input pada setiap Template Surat.
 
-Config nomor surat memiliki relasi dengan Master Takah.
+Setiap template dapat memiliki parameter yang berbeda sesuai kebutuhan jenis surat.
+
+Contoh parameter:
+
+* Nama Tujuan
+* Nama Kegiatan
+* Tanggal Kegiatan
+* Tempat Kegiatan
+* Keperluan
 
 Flow:
 
 ```text
-User membuat surat
+Admin membuat Template Surat
 ↓
-Sistem membaca jenis surat dari Master Takah
+Admin menambahkan Parameter Surat
 ↓
-Sistem membaca config nomor surat berdasarkan jenis surat
+User memilih Template
 ↓
-Sistem membaca aturan reset nomor surat
+Sistem membaca Parameter Surat
 ↓
-Sistem generate nomor otomatis
+User mengisi data sesuai parameter
 ↓
-Nomor surat disimpan
+Data digunakan untuk membuat Surat Keluar
+```
+
+Contoh penggunaan pada template:
+
+```text
+Dengan hormat,
+
+Kami mengundang {{nama_tujuan}}
+untuk menghadiri {{nama_kegiatan}}
+pada {{tanggal_kegiatan}}
+bertempat di {{tempat_kegiatan}}.
+```
+
+Status saat ini:
+
+* CRUD Parameter Surat telah tersedia.
+* Data Parameter Surat telah menggunakan MySQL.
+* Parameter Surat terhubung dengan Template Surat.
+
+---
+
+# 4. Config Nomor Surat Integration
+
+Config Nomor Surat digunakan untuk menghasilkan nomor surat secara otomatis.
+
+Config Nomor Surat memiliki relasi dengan Master Takah sehingga setiap jenis surat dapat memiliki format nomor yang berbeda.
+
+Flow:
+
+```text
+User membuat Surat Keluar
+↓
+Sistem membaca Master Takah
+↓
+Sistem membaca Config Nomor Surat
+↓
+Generate nomor surat otomatis
+↓
+Nomor surat disimpan pada Surat Keluar
 ```
 
 Contoh:
 
 ```text
-001/UND/CBN/052026
-001/SKET/CBN/052026
+001/UND/CBN/062026
+001/SKET/CBN/062026
 ```
-
-Aturan reset:
-
-* monthly → reset setiap bulan
-* yearly → reset setiap tahun
 
 Status saat ini:
 
-* CRUD Config Nomor Surat tersedia
-* Relasi dengan Master Takah tersedia
-* Generate nomor surat sudah terintegrasi dengan Surat Keluar
+* CRUD Config Nomor Surat telah menggunakan MySQL.
+* Relasi dengan Master Takah telah berjalan.
+* Nomor surat dibuat otomatis berdasarkan konfigurasi.
+* Nilai `last_number` diperbarui setiap nomor surat berhasil dibuat.
 
 ---
 
-# 4. Surat Keluar Integration
+# 5. Surat Keluar Integration
 
-Surat keluar menggunakan:
+Surat Keluar menggunakan beberapa modul yang saling terhubung, yaitu:
 
 * Master Takah
-* Template Surat
 * Config Nomor Surat
+* Template Surat
+* Parameter Surat
 
 Flow:
 
 ```text
 User login
 ↓
-Pilih jenis surat
-↓
-Pilih template surat
+Memilih jenis surat
 ↓
 Generate nomor surat
 ↓
-Simpan surat sebagai draft
+Memilih Template Surat
 ↓
-Kirim surat untuk approval
+Sistem membaca Parameter Surat
 ↓
-Approver melakukan review
+User mengisi data surat
 ↓
-Approve / reject surat
+Surat disimpan sebagai draft
 ↓
-Monitoring surat
+User mengirim surat untuk approval
+↓
+Status Surat Keluar menjadi pending
 ```
 
 Status saat ini:
 
-* CRUD Surat Keluar tersedia
-* Nomor surat dibuat otomatis berdasarkan Config Nomor Surat
-* Status awal surat adalah draft
-* Data masih menggunakan dummy data
+* CRUD Surat Keluar telah menggunakan MySQL.
+* Nomor surat dibuat otomatis.
+* Status awal surat adalah `draft`.
+* Surat dapat dikirim ke proses Approval.
+# 6. Approval Surat Integration
 
----
+Approval Surat digunakan untuk proses review dan persetujuan Surat Keluar sebelum surat dinyatakan selesai.
 
-# 5. Approval Surat Integration
-
-Approval surat digunakan untuk proses review dan persetujuan surat sebelum surat dinyatakan selesai.
+Approval Surat juga digunakan untuk mencatat riwayat proses persetujuan beserta approver yang melakukan review.
 
 Flow:
 
 ```text
-User membuat surat
+User membuat Surat Keluar
 ↓
-Surat masuk ke approval
+Surat dikirim untuk approval
+↓
+Status Surat Keluar menjadi pending
 ↓
 Approver melakukan review
 ↓
-Approve / reject surat
+Approver memberikan catatan
 ↓
-Status surat diperbarui
+Approve / Reject
 ↓
-Riwayat approval tersimpan
+Status Approval diperbarui
+↓
+Status Surat Keluar ikut diperbarui
+↓
+Monitoring Surat diperbarui
 ```
+
+Data approval yang disimpan:
+
+* ID Surat Keluar
+* Nomor Surat
+* ID Approver
+* Nama Approver
+* Status Approval
+* Catatan Approval
+* Waktu Approval
 
 Tujuan:
 
-* Mengetahui siapa yang melakukan review surat
-* Mengetahui status approval surat
-* Menyimpan riwayat approval surat
-* Monitoring proses surat
+* Mengetahui siapa yang melakukan review.
+* Menyimpan catatan approval atau reject.
+* Memperbarui status Surat Keluar.
+* Menjadi sumber data Monitoring Surat.
 
 Status saat ini:
 
-* CRUD Approval Surat tersedia
-* Data approver dan catatan approval dapat disimpan
-* Data masih menggunakan dummy data
+* CRUD Approval Surat telah menggunakan MySQL.
+* Status approval dapat berubah menjadi `pending`, `approved`, atau `rejected`.
+* Status Surat Keluar diperbarui secara otomatis setelah approval diubah.
 
 ---
 
-# 6. Surat Masuk Integration
+# 7. Surat Masuk Integration
 
-Surat masuk digunakan untuk mencatat surat yang diterima dari pihak luar perusahaan atau instansi.
+Surat Masuk digunakan untuk mencatat surat yang diterima dari pihak luar perusahaan atau instansi.
 
 Flow:
 
 ```text
-Surat diterima dari pihak luar
+Surat diterima
 ↓
-User / admin input data surat masuk
+Admin menginput data Surat Masuk
 ↓
-Upload file surat
+Data disimpan ke database
 ↓
-Data surat masuk disimpan
+Status menjadi received
 ↓
-Monitoring surat masuk
+Monitoring Surat diperbarui
 ```
 
 Tujuan:
 
-* Menyimpan arsip surat masuk secara digital
-* Mempermudah pencarian surat masuk
-* Menyimpan riwayat surat yang diterima
-* Monitoring surat masuk
+* Menyimpan arsip surat masuk.
+* Mempermudah pencarian surat.
+* Mendukung monitoring surat.
 
 Status saat ini:
 
-* CRUD Surat Masuk tersedia
-* Data surat masuk masih menggunakan dummy data
-* Upload file surat belum diimplementasikan
+* CRUD Surat Masuk telah menggunakan MySQL.
+* Status awal surat masuk adalah `received`.
+* Upload file surat masih menggunakan placeholder dan akan dikembangkan pada tahap berikutnya.
 
 ---
 
-# 7. Monitoring Surat Integration
+# 8. Monitoring Surat Integration
 
-Monitoring surat digunakan untuk tracking status surat keluar dan surat masuk.
+Monitoring Surat digunakan untuk menampilkan perkembangan seluruh proses surat.
 
-Status surat keluar:
+Monitoring memperoleh data dari:
+
+* Surat Keluar
+* Approval Surat
+* Surat Masuk
+
+Status Surat Keluar:
 
 * draft
 * pending
@@ -249,131 +321,153 @@ Status surat keluar:
 * rejected
 * completed
 
-Status surat masuk:
+Status Surat Masuk:
 
 * received
 * completed
 
-Flow surat keluar:
+Flow Surat Keluar:
 
 ```text
 Surat dibuat
 ↓
 Status draft
 ↓
-Surat dikirim untuk approval
+Approval dikirim
 ↓
-Approver melakukan review
+Review dilakukan
 ↓
-Status approval berubah
+Status Approval berubah
 ↓
-Riwayat approval tersimpan
+Status Surat Keluar diperbarui
 ↓
-Monitoring surat diperbarui
+Monitoring diperbarui
 ```
 
-Flow surat masuk:
+Flow Surat Masuk:
 
 ```text
 Surat diterima
 ↓
-Data surat dicatat
-↓
-File surat disimpan
+Data Surat Masuk disimpan
 ↓
 Status received
 ↓
-Monitoring surat diperbarui
+Monitoring diperbarui
 ```
+
+Data Monitoring yang disimpan:
+
+* ID Surat Keluar atau Surat Masuk
+* Nomor Surat
+* Status Surat
+* Approver terakhir
+* Catatan approval terakhir
+* User terakhir yang memperbarui data
+* Waktu update
 
 Status saat ini:
 
-* CRUD Monitoring Surat tersedia
-* Monitoring menyimpan status surat
-* Monitoring menyimpan approver terakhir
-* Monitoring menyimpan catatan approval terakhir
-* Data masih menggunakan dummy data
+* CRUD Monitoring Surat telah menggunakan MySQL.
+* Monitoring menampilkan status surat terbaru.
+* Monitoring membaca data Approval Surat dan Surat Masuk.
 
 ---
 
 # Authentication Integration
 
-Authentication digunakan untuk membatasi akses user.
+Authentication digunakan untuk membatasi akses pengguna ke endpoint API.
 
 Saat ini:
 
-* Authentication menggunakan JWT
-* Login menghasilkan token JWT
-* Middleware digunakan untuk memvalidasi token pada endpoint yang dilindungi
-* Password hashing belum diimplementasikan
-* Role authorization admin/user belum diimplementasikan
+* Authentication menggunakan JWT.
+* Login menghasilkan token JWT.
+* Middleware melakukan validasi token pada endpoint yang dilindungi.
 
-Role plan:
+Role yang direncanakan:
 
 * admin
 * user
 
-Admin:
+Admin memiliki akses:
 
-* Manage master data
-* Manage template surat
-* Manage config nomor surat
-* Manage surat masuk
-* Monitoring semua surat
-* Approval surat
-* Review surat
+* Mengelola Master Takah
+* Mengelola Config Nomor Surat
+* Mengelola Template Surat
+* Mengelola Parameter Surat
+* Mengelola Surat Masuk
+* Melakukan Approval Surat
+* Melihat Monitoring Surat
 
-User:
+User memiliki akses:
 
-* Membuat surat
-* Melihat surat sendiri
-* Input surat masuk
-* Melihat riwayat surat masuk
-* Monitoring status approval surat
+* Membuat Surat Keluar
+* Melihat status surat
+* Melihat hasil approval
+* Menginput Surat Masuk sesuai hak akses
 
 ---
 
-# Database Integration Plan
+# Database Integration
 
-Database yang direncanakan:
+Database yang digunakan:
 
 | Table              | Purpose                 |
 | ------------------ | ----------------------- |
 | users              | Data user               |
-| master_takah       | Jenis surat             |
+| master_takah       | Data jenis surat        |
+| config_nomor_surat | Konfigurasi nomor surat |
 | template_surat     | Template surat          |
-| config_nomor_surat | Config penomoran        |
+| parameter_surat    | Parameter template      |
 | surat_keluar       | Data surat keluar       |
-| approval_surat     | Data approval surat     |
+| approval_surat     | Data approval           |
 | surat_masuk        | Data surat masuk        |
-| monitoring_surat   | Monitoring status surat |
+| monitoring_surat   | Monitoring surat        |
+
+Relasi utama:
+
+```text
+users
+│
+├── master_takah
+├── surat_keluar
+├── surat_masuk
+├── approval_surat
+└── monitoring_surat
+
+master_takah
+│
+├── config_nomor_surat
+├── template_surat
+│   │
+│   └── parameter_surat
+│
+└── surat_keluar
+      │
+      ├── approval_surat
+      └── monitoring_surat
+
+surat_masuk
+│
+└── monitoring_surat
+```
 
 ---
 
 # Current Integration Status
 
-| Module               | Status | Notes                                |
-| -------------------- | ------ | ------------------------------------ |
-| Master Takah         | Done   | CRUD tersedia                        |
-| Surat                | Done   | CRUD dummy tersedia                  |
-| Authentication       | Done   | JWT authentication tersedia          |
-| Config Nomor Surat   | Done   | Relasi dengan Master Takah tersedia  |
-| Template Surat       | Done   | CRUD template surat tersedia         |
-| Generate Nomor Surat | Done   | Helper generate nomor surat tersedia |
-| Surat Keluar         | Done   | Generate nomor otomatis berjalan     |
-| Surat Masuk          | Done   | CRUD surat masuk tersedia            |
-| Approval Surat       | Done   | CRUD approval tersedia               |
-| Monitoring Surat     | Done   | CRUD monitoring tersedia             |
-| Database             | Todo   | Belum terintegrasi MySQL             |
-
----
-
-# Future Integration Plan
-
-Pengembangan integrasi selanjutnya:
-
-* MySQL integration
-* Upload file surat
-* Password hashing
-* Authorization role
-* Approval multi level
+| Module               | Status  | Notes                                            |
+| -------------------- | ------- | ------------------------------------------------ |
+| Master Takah         | Done    | CRUD menggunakan MySQL                           |
+| Authentication       | Done    | JWT Authentication                               |
+| Config Nomor Surat   | Done    | Relasi dengan Master Takah                       |
+| Template Surat       | Done    | CRUD menggunakan MySQL                           |
+| Parameter Surat      | Done    | CRUD dan relasi dengan Template Surat            |
+| Generate Nomor Surat | Done    | Nomor otomatis berdasarkan konfigurasi           |
+| Surat Keluar         | Done    | CRUD menggunakan MySQL                           |
+| Approval Surat       | Done    | Approval memperbarui status Surat Keluar         |
+| Surat Masuk          | Done    | CRUD menggunakan MySQL                           |
+| Monitoring Surat     | Done    | CRUD menggunakan MySQL dan membaca data approval |
+| Database             | Done    | Seluruh modul telah terintegrasi dengan MySQL    |
+| Upload File Surat    | Partial | Tahap pengembangan selanjutnya                   |
+| Role Authorization   | Partial | Pengembangan hak akses admin dan user            |

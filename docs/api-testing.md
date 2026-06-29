@@ -1,12 +1,12 @@
 # API Testing - Takah API
 
-Dokumen ini digunakan untuk mencatat proses testing endpoint API pada aplikasi Takah.
+Dokumen ini digunakan untuk mencatat proses pengujian endpoint API pada aplikasi Takah.
 
-Testing dilakukan menggunakan:
+Pengujian dilakukan menggunakan:
 
 * Postman
 * Browser
-* Localhost environment
+* Localhost Environment
 
 ---
 
@@ -18,7 +18,7 @@ http://localhost:8080/api/v1
 
 ---
 
-# Health Check
+# Health Check Testing
 
 ## Endpoint
 
@@ -43,7 +43,7 @@ GET http://localhost:8080/api/v1/health
 ## Status
 
 * Success
-* Endpoint berjalan normal
+* Endpoint berjalan normal.
 
 ---
 
@@ -80,13 +80,36 @@ POST /auth/login
 ### Status
 
 * Success
-* JWT token berhasil dibuat
+* JWT token berhasil dibuat.
+* Middleware berhasil memvalidasi token.
+* Endpoint yang diproteksi berhasil diakses menggunakan JWT.
+
+---
+
+# Dashboard API Testing
+
+## Dashboard Summary
+
+### Endpoint
+
+```http
+GET /surat
+```
+
+### Status
+
+* Success
+
+### Notes
+
+* Endpoint digunakan sebagai dashboard ringkasan aplikasi.
+* Menampilkan informasi jumlah data pada sistem.
 
 ---
 
 # Master Takah Testing
 
-## Get All Takah
+## Get All Master Takah
 
 ### Endpoint
 
@@ -100,7 +123,7 @@ GET /takah
 
 ---
 
-## Get Takah By ID
+## Get Master Takah By ID
 
 ### Endpoint
 
@@ -114,7 +137,7 @@ GET /takah/:id
 
 ---
 
-## Create Takah
+## Create Master Takah
 
 ### Endpoint
 
@@ -126,9 +149,13 @@ POST /takah
 
 * Success
 
+### Notes
+
+* Data berhasil disimpan ke database MySQL.
+
 ---
 
-## Update Takah
+## Update Master Takah
 
 ### Endpoint
 
@@ -140,9 +167,11 @@ PUT /takah/:id
 
 * Success
 
+* Data berhasil diperbarui pada database.
+
 ---
 
-## Delete Takah
+## Delete Master Takah
 
 ### Endpoint
 
@@ -154,16 +183,18 @@ DELETE /takah/:id
 
 * Success
 
+* Data berhasil dihapus dari database.
+
 ---
 
-# Surat Testing
+# Parameter Surat Testing
 
-## Get All Surat
+## Get All Parameter Surat
 
 ### Endpoint
 
 ```http
-GET /surat
+GET /parameter-surat
 ```
 
 ### Status
@@ -172,12 +203,12 @@ GET /surat
 
 ---
 
-## Get Surat By ID
+## Get Parameter Surat By ID
 
 ### Endpoint
 
 ```http
-GET /surat/:id
+GET /parameter-surat/:id
 ```
 
 ### Status
@@ -186,12 +217,31 @@ GET /surat/:id
 
 ---
 
-## Create Surat
+## Create Parameter Surat
 
 ### Endpoint
 
 ```http
-POST /surat
+POST /parameter-surat
+```
+
+### Status
+
+* Success
+
+### Notes
+
+* Parameter surat berhasil disimpan berdasarkan Master Takah.
+* Parameter surat berhasil digunakan sebagai acuan pembuatan template surat.
+
+---
+
+## Update Parameter Surat
+
+### Endpoint
+
+```http
+PUT /parameter-surat/:id
 ```
 
 ### Status
@@ -200,26 +250,12 @@ POST /surat
 
 ---
 
-## Update Surat
+## Delete Parameter Surat
 
 ### Endpoint
 
 ```http
-PUT /surat/:id
-```
-
-### Status
-
-* Success
-
----
-
-## Delete Surat
-
-### Endpoint
-
-```http
-DELETE /surat/:id
+DELETE /parameter-surat/:id
 ```
 
 ### Status
@@ -269,6 +305,12 @@ POST /config-nomor
 ### Status
 
 * Success
+
+### Notes
+
+* Relasi dengan Master Takah berhasil digunakan.
+* Config nomor surat berhasil disimpan ke database.
+* Config nomor surat dapat disimpan berdasarkan jenis surat.
 
 ---
 
@@ -342,6 +384,11 @@ POST /template-surat
 
 * Success
 
+### Notes
+
+* Template berhasil terhubung dengan Master Takah.
+* Template berhasil disimpan ke database berdasarkan jenis surat.
+
 ---
 
 ## Update Template Surat
@@ -370,8 +417,8 @@ DELETE /template-surat/:id
 
 * Success
 
----
-
+```
+```
 # Surat Keluar Testing
 
 ## Get All Surat Keluar
@@ -416,8 +463,11 @@ POST /surat-keluar
 
 ### Notes
 
-* Nomor surat berhasil dibuat otomatis berdasarkan Config Nomor Surat.
-* Relasi Master Takah berhasil digunakan saat generate nomor surat.
+* Data surat keluar berhasil disimpan ke database MySQL.
+* Nomor surat berhasil dibuat secara otomatis berdasarkan Config Nomor Surat.
+* Nomor surat mengikuti jenis surat yang dipilih pada Master Takah.
+* Nomor terakhir pada Config Nomor Surat berhasil diperbarui secara otomatis.
+* Status awal surat adalah **draft**.
 
 ---
 
@@ -433,6 +483,10 @@ PUT /surat-keluar/:id
 
 * Success
 
+### Notes
+
+* Data surat keluar berhasil diperbarui pada database.
+
 ---
 
 ## Delete Surat Keluar
@@ -447,77 +501,9 @@ DELETE /surat-keluar/:id
 
 * Success
 
----
+### Notes
 
-# Surat Masuk Testing
-
-## Get All Surat Masuk
-
-### Endpoint
-
-```http
-GET /surat-masuk
-```
-
-### Status
-
-* Success
-
----
-
-## Get Surat Masuk By ID
-
-### Endpoint
-
-```http
-GET /surat-masuk/:id
-```
-
-### Status
-
-* Success
-
----
-
-## Create Surat Masuk
-
-### Endpoint
-
-```http
-POST /surat-masuk
-```
-
-### Status
-
-* Success
-
----
-
-## Update Surat Masuk
-
-### Endpoint
-
-```http
-PUT /surat-masuk/:id
-```
-
-### Status
-
-* Success
-
----
-
-## Delete Surat Masuk
-
-### Endpoint
-
-```http
-DELETE /surat-masuk/:id
-```
-
-### Status
-
-* Success
+* Data surat keluar berhasil dihapus dari database.
 
 ---
 
@@ -563,6 +549,13 @@ POST /approval
 
 * Success
 
+### Notes
+
+* Data approval berhasil disimpan ke database.
+* Data approver berhasil direlasikan dengan surat keluar.
+* Status surat keluar otomatis berubah menjadi **pending**.
+* Riwayat approval berhasil tercatat.
+
 ---
 
 ## Update Approval
@@ -576,6 +569,12 @@ PUT /approval/:id
 ### Status
 
 * Success
+
+### Notes
+
+* Status approval berhasil diperbarui menjadi **approved** atau **rejected**.
+* Status pada Surat Keluar otomatis ikut diperbarui.
+* Waktu approval berhasil tercatat pada database.
 
 ---
 
@@ -621,6 +620,14 @@ POST /monitoring
 
 * Success
 
+### Notes
+
+* Data monitoring berhasil disimpan ke database.
+* Status surat berhasil ditampilkan.
+* Approver terakhir berhasil ditampilkan.
+* Catatan approval terakhir berhasil ditampilkan.
+* Monitoring berhasil menyimpan riwayat proses surat.
+
 ---
 
 ## Update Monitoring
@@ -634,6 +641,11 @@ PUT /monitoring/:id
 ### Status
 
 * Success
+
+### Notes
+
+* Status monitoring berhasil diperbarui.
+* Data approver terakhir berhasil diperbarui.
 
 ---
 
@@ -649,37 +661,162 @@ DELETE /monitoring/:id
 
 * Success
 
+### Notes
+
+* Data monitoring berhasil dihapus dari database.
+# Surat Masuk Testing
+
+## Get All Surat Masuk
+
+### Endpoint
+
+```http
+GET /surat-masuk
+```
+
+### Status
+
+* Success
+
+---
+
+## Get Surat Masuk By ID
+
+### Endpoint
+
+```http
+GET /surat-masuk/:id
+```
+
+### Status
+
+* Success
+
+---
+
+## Create Surat Masuk
+
+### Endpoint
+
+```http
+POST /surat-masuk
+```
+
+### Status
+
+* Success
+
+### Notes
+
+* Data surat masuk berhasil disimpan ke database MySQL.
+* Status awal surat masuk adalah **received**.
+* Data pengirim, penerima, nomor surat, dan tanggal surat berhasil tersimpan.
+
+---
+
+## Update Surat Masuk
+
+### Endpoint
+
+```http
+PUT /surat-masuk/:id
+```
+
+### Status
+
+* Success
+
+### Notes
+
+* Data surat masuk berhasil diperbarui pada database.
+
+---
+
+## Delete Surat Masuk
+
+### Endpoint
+
+```http
+DELETE /surat-masuk/:id
+```
+
+### Status
+
+* Success
+
+### Notes
+
+* Data surat masuk berhasil dihapus dari database.
+
+---
+
+# Database Connection Testing
+
+## Database
+
+```text
+takah_db
+```
+
+## Configuration
+
+```text
+.env
+```
+
+### Status
+
+* Database MySQL berhasil dibuat.
+* Konfigurasi database menggunakan file `.env`.
+* Aplikasi berhasil terhubung ke database MySQL.
+* Seluruh endpoint CRUD berhasil menggunakan database MySQL.
+* Koneksi database berhasil diuji menggunakan package `database/sql`.
+
+---
+
+# Authentication & Security Testing
+
+## JWT Authentication
+
+### Status
+
+* Success
+
+### Notes
+
+* JWT berhasil dibuat saat proses login.
+* Token berhasil digunakan untuk mengakses endpoint yang diproteksi.
+* Middleware berhasil memvalidasi token.
+* Endpoint tanpa token mengembalikan status **401 Unauthorized**.
+
 ---
 
 # Current Testing Status
 
-| Module                   | Status | Notes                   |
-| ------------------------ | ------ | ----------------------- |
-| Health Check             | Done   | Endpoint berjalan       |
-| Authentication           | Done   | JWT login berhasil      |
-| Master Takah             | Done   | CRUD berjalan           |
-| Surat                    | Done   | CRUD berjalan           |
-| Config Nomor Surat       | Done   | CRUD berjalan           |
-| Template Surat           | Done   | CRUD berjalan           |
-| Surat Keluar             | Done   | CRUD berjalan           |
-| Generate Nomor Surat     | Done   | Berjalan otomatis       |
-| Surat Masuk              | Done   | CRUD berjalan           |
-| Approval Surat           | Done   | CRUD berjalan           |
-| Monitoring Surat         | Done   | CRUD berjalan           |
-| Database Testing         | Todo   | Database belum tersedia |
-| Password Hashing Testing | Todo   | Planned                 |
+| Module               | Status | Notes                                       |
+| -------------------- | ------ | ------------------------------------------- |
+| Health Check         | Done   | Endpoint berjalan normal                    |
+| Authentication       | Done   | JWT Authentication berhasil                 |
+| Dashboard API        | Done   | Endpoint dashboard berjalan normal          |
+| Master Takah         | Done   | CRUD menggunakan MySQL                      |
+| Parameter Surat      | Done   | CRUD menggunakan MySQL                      |
+| Config Nomor Surat   | Done   | CRUD menggunakan MySQL                      |
+| Template Surat       | Done   | CRUD menggunakan MySQL                      |
+| Generate Nomor Surat | Done   | Nomor surat berhasil dibuat otomatis        |
+| Surat Keluar         | Done   | CRUD menggunakan MySQL                      |
+| Approval Surat       | Done   | Approval berhasil mengubah status surat     |
+| Monitoring Surat     | Done   | CRUD menggunakan MySQL                      |
+| Surat Masuk          | Done   | CRUD menggunakan MySQL                      |
+| Database Setup       | Done   | Database `takah_db` berhasil dibuat         |
+| Database Connection  | Done   | MySQL berhasil terhubung menggunakan `.env` |
+| Database CRUD        | Done   | Seluruh endpoint berhasil menggunakan MySQL |
 
 ---
 
-# Future Testing Plan
+# Testing Conclusion
 
-Testing yang direncanakan selanjutnya:
+Berdasarkan hasil pengujian menggunakan Postman, Browser, dan Localhost Environment, seluruh endpoint pada Takah API berhasil dijalankan dengan baik. Seluruh proses CRUD pada setiap modul telah menggunakan database MySQL sebagai media penyimpanan data. Proses autentikasi menggunakan JSON Web Token (JWT) juga berhasil diterapkan sehingga endpoint yang diproteksi hanya dapat diakses oleh pengguna yang telah melakukan login.
 
-* Database integration testing
-* Password hashing testing
-* Authorization testing
-* Validation testing
-* Error handling testing
-* File upload testing
-* Load testing
-* API documentation testing
+Implementasi generate nomor surat otomatis berhasil berjalan berdasarkan konfigurasi pada Config Nomor Surat. Selain itu, proses Approval Surat telah terintegrasi dengan Surat Keluar sehingga perubahan status approval secara otomatis memperbarui status surat. Modul Monitoring Surat juga berhasil mencatat perkembangan status surat berdasarkan proses approval yang dilakukan.
+
+Secara keseluruhan, backend Takah API telah berhasil diimplementasikan dan seluruh endpoint utama telah melewati proses pengujian dengan hasil yang sesuai dengan kebutuhan sistem.

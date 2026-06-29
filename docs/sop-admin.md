@@ -6,7 +6,7 @@ Dokumen ini menjelaskan prosedur penggunaan aplikasi Takah dari sisi admin.
 
 # Tujuan
 
-SOP Admin dibuat untuk membantu admin dalam mengelola data master, surat, approval surat, dan monitoring surat pada aplikasi Takah.
+SOP Admin dibuat untuk membantu admin dalam mengelola data Master Takah, Parameter Surat, Template Surat, Config Nomor Surat, Surat Keluar, Surat Masuk, Approval Surat, dan Monitoring Surat pada aplikasi Takah.
 
 ---
 
@@ -14,16 +14,18 @@ SOP Admin dibuat untuk membantu admin dalam mengelola data master, surat, approv
 
 Admin memiliki akses untuk:
 
-* Login ke sistem
-* Mengelola Master Takah
-* Mengelola template surat
-* Mengelola config nomor surat
-* Mengelola surat masuk
-* Monitoring seluruh surat
-* Approve surat
-* Review surat
-* Melihat riwayat approval surat
-* Melihat riwayat surat masuk
+* Login ke sistem.
+* Mengelola Master Takah.
+* Mengelola Parameter Surat.
+* Mengelola Template Surat.
+* Mengelola Config Nomor Surat.
+* Mengelola Surat Keluar.
+* Mengelola Surat Masuk.
+* Melakukan review surat.
+* Melakukan approval atau reject surat.
+* Melihat Monitoring Surat.
+* Melihat riwayat approval.
+* Melihat riwayat surat masuk.
 
 ---
 
@@ -32,19 +34,21 @@ Admin memiliki akses untuk:
 ```text
 Admin login
 ↓
-Admin mengelola master data
+Mengelola Master Takah
 ↓
-Admin mengelola template surat
+Mengelola Parameter Surat
 ↓
-Admin mengelola config nomor surat
+Mengelola Template Surat
 ↓
-Admin mengelola surat masuk
+Mengelola Config Nomor Surat
 ↓
-Admin monitoring surat
+Mengelola Surat Keluar
 ↓
-Admin melakukan review surat
+Mengelola Surat Masuk
 ↓
-Admin melakukan approval surat
+Melakukan review dan approval
+↓
+Monitoring seluruh proses surat
 ```
 
 ---
@@ -77,133 +81,236 @@ POST /api/v1/auth/login
 }
 ```
 
+Setelah berhasil login, admin menggunakan token JWT untuk mengakses endpoint yang membutuhkan autentikasi.
+
 ---
 
 # 2. Manage Master Takah
 
 Admin dapat:
 
-* Menambah jenis surat
-* Mengubah jenis surat
-* Menghapus jenis surat
-* Melihat daftar jenis surat
+* Menambah data Master Takah.
+* Mengubah data Master Takah.
+* Menghapus data Master Takah.
+* Melihat daftar Master Takah.
+
+Master Takah digunakan sebagai referensi pada:
+
+* Parameter Surat
+* Template Surat
+* Config Nomor Surat
+* Surat Keluar
+
+Setiap jenis surat memiliki kode surat yang digunakan sebagai acuan generate nomor surat dan pemilihan template.
 
 ---
 
-# 3. Manage Template Surat
+# 3. Manage Parameter Surat
 
 Admin dapat:
 
-* Membuat template surat
-* Mengubah template surat
-* Menghapus template surat
-* Melihat daftar template surat
+* Menambah Parameter Surat.
+* Mengubah Parameter Surat.
+* Menghapus Parameter Surat.
+* Melihat daftar Parameter Surat.
+
+Parameter Surat digunakan untuk menentukan field yang harus diisi ketika membuat surat berdasarkan Template Surat.
+
+Contoh parameter:
+
+* Nama Tujuan
+* Jabatan
+* Unit Kerja
+* Tanggal Kegiatan
+* Tempat Kegiatan
+* Keperluan
+
+Setiap Template Surat dapat memiliki parameter yang berbeda sesuai kebutuhan jenis surat.
 
 ---
 
-# 4. Manage Config Nomor Surat
+# 4. Manage Template Surat
 
-Admin dapat mengatur format nomor surat.
+Admin dapat:
+
+* Menambah Template Surat.
+* Mengubah Template Surat.
+* Menghapus Template Surat.
+* Melihat daftar Template Surat.
+
+Template Surat dibuat berdasarkan jenis surat pada Master Takah dan dapat menggunakan Parameter Surat sebagai placeholder agar isi surat dapat dihasilkan secara dinamis.
+
+---
+
+# 5. Manage Config Nomor Surat
+
+Admin dapat mengelola konfigurasi nomor surat untuk setiap jenis surat.
 
 Contoh format:
 
 ```text
-001/UND/CBN/052026
+001/UND/CBN/062026
 ```
 
-Aturan:
+Admin dapat mengatur:
 
-* Nomor otomatis bertambah
-* Reset mengikuti config yang digunakan
-* Config nomor surat terhubung dengan Master Takah
+* Jenis surat.
+* Kode perusahaan.
+* Kode divisi.
+* Aturan reset nomor surat.
+* Nomor terakhir yang digunakan.
 
----
-
-# 5. Manage Surat Keluar
-
-Admin dapat:
-
-* Melihat data surat keluar
-* Membuat surat keluar
-* Mengubah data surat keluar
-* Menghapus data surat keluar
-* Melihat status surat keluar
+Config Nomor Surat digunakan sebagai acuan sistem untuk menghasilkan nomor surat secara otomatis saat Surat Keluar dibuat.
 
 ---
 
-# 6. Manage Surat Masuk
+# 6. Manage Surat Keluar
 
 Admin dapat:
 
-* Menambah data surat masuk
-* Mengubah data surat masuk
-* Menghapus data surat masuk
-* Melihat riwayat surat masuk
+* Melihat daftar Surat Keluar.
+* Membuat Surat Keluar.
+* Mengubah data Surat Keluar.
+* Menghapus Surat Keluar.
+* Melihat status surat.
 
-Flow:
+Flow Surat Keluar:
 
 ```text
-Surat diterima dari pihak luar
+Pilih jenis surat
 ↓
-Admin input data surat masuk
+Sistem membaca Config Nomor Surat
 ↓
-Admin upload file surat
+Generate nomor surat otomatis
 ↓
-Data surat masuk disimpan
+Sistem membaca Template Surat
 ↓
-Surat masuk tercatat pada sistem
+Sistem membaca Parameter Surat
+↓
+Admin mengisi data surat
+↓
+Surat disimpan sebagai draft
+↓
+Surat dikirim untuk approval
 ```
 
----
-
-# 7. Monitoring Surat
-
-Admin dapat melihat:
-
-* Status surat
-* Riwayat surat
-* Surat pending
-* Surat approved
-* Surat rejected
-* Riwayat approval surat
-* Riwayat surat masuk
-
-Contoh status:
+Status Surat Keluar:
 
 * draft
 * pending
 * approved
 * rejected
-* received
+* completed
 
 ---
 
-# 8. Approval Surat
+# 7. Manage Surat Masuk
 
-Flow approval:
+Admin dapat:
+
+* Menambah Surat Masuk.
+* Mengubah Surat Masuk.
+* Menghapus Surat Masuk.
+* Melihat daftar Surat Masuk.
+
+Flow:
 
 ```text
-User membuat surat
+Surat diterima
 ↓
-Surat masuk monitoring approval
+Input data Surat Masuk
 ↓
-Admin melakukan review surat
+Data disimpan ke database
 ↓
-Admin approve / reject surat
+Status menjadi received
 ↓
-Status surat berubah
+Monitoring Surat diperbarui
+```
+
+Status Surat Masuk:
+
+* received
+* completed
+# 8. Review dan Approval Surat
+
+Admin bertanggung jawab melakukan proses review terhadap Surat Keluar yang diajukan sebelum surat dinyatakan selesai.
+
+Flow:
+
+```text
+User membuat Surat Keluar
 ↓
-Riwayat approval tersimpan
+Surat disimpan sebagai draft
+↓
+User mengirim surat untuk approval
+↓
+Status Surat Keluar menjadi pending
+↓
+Admin melakukan review
+↓
+Memberikan catatan review
+↓
+Approve atau Reject surat
+↓
+Status Approval diperbarui
+↓
+Status Surat Keluar ikut diperbarui
+↓
+Monitoring Surat diperbarui
 ```
 
 Admin dapat:
 
-* Melihat surat pending approval
-* Melakukan review surat
-* Memberikan catatan approval
-* Approve surat
-* Reject surat
-* Melihat riwayat approval surat
+* Melihat daftar surat yang menunggu review.
+* Melihat detail surat.
+* Memberikan catatan review.
+* Menyetujui surat.
+* Menolak surat.
+* Melihat riwayat approval.
+
+Status Approval:
+
+* pending
+* approved
+* rejected
+
+Setelah approval diperbarui, sistem akan otomatis memperbarui status Surat Keluar sehingga proses monitoring dapat menampilkan status terbaru.
+
+---
+
+# 9. Monitoring Surat
+
+Admin dapat melakukan monitoring terhadap seluruh proses surat.
+
+Monitoring mengambil data dari:
+
+* Surat Keluar
+* Approval Surat
+* Surat Masuk
+
+Informasi yang dapat dilihat:
+
+* Nomor surat.
+* Status surat.
+* Approver terakhir.
+* Catatan approval terakhir.
+* User terakhir yang memperbarui data.
+* Waktu terakhir diperbarui.
+
+Status Surat Keluar:
+
+* draft
+* pending
+* approved
+* rejected
+* completed
+
+Status Surat Masuk:
+
+* received
+* completed
+
+Monitoring digunakan untuk mempermudah admin mengetahui perkembangan setiap surat tanpa harus membuka masing-masing modul.
 
 ---
 
@@ -211,29 +318,28 @@ Admin dapat:
 
 Status implementasi saat ini:
 
-| Feature              | Status |
-| -------------------- | ------ |
-| JWT Authentication   | Done   |
-| CRUD Master Takah    | Done   |
-| CRUD Surat           | Done   |
-| Config Nomor Surat   | Done   |
-| Template Surat       | Done   |
-| Generate Nomor Surat | Done   |
-| Surat Keluar         | Done   |
-| Surat Masuk          | Done   |
-| Approval Surat       | Done   |
-| Monitoring Surat     | Done   |
-| Database Integration | Todo   |
+| Feature                 | Status  |
+| ----------------------- | ------- |
+| JWT Authentication      | Done    |
+| CRUD Master Takah       | Done    |
+| CRUD Parameter Surat    | Done    |
+| CRUD Config Nomor Surat | Done    |
+| CRUD Template Surat     | Done    |
+| Generate Nomor Surat    | Done    |
+| CRUD Surat Keluar       | Done    |
+| CRUD Surat Masuk        | Done    |
+| Review Surat            | Done    |
+| Approval Surat          | Done    |
+| Monitoring Surat        | Done    |
+| Database Setup          | Done    |
+| Database Integration    | Done    |
+| Password Hashing        | Partial |
+| Authorization Role      | Partial |
 
 ---
 
-# Future Development
+# Catatan
 
-Pengembangan admin selanjutnya:
+Seluruh modul utama pada aplikasi Takah telah terintegrasi dengan database MySQL. Data Master Takah, Parameter Surat, Template Surat, Config Nomor Surat, Surat Keluar, Approval Surat, Surat Masuk, dan Monitoring Surat telah menggunakan penyimpanan database sehingga perubahan data dapat langsung tercermin pada setiap modul yang saling berelasi.
 
-* MySQL integration
-* Upload file surat
-* Password hashing
-* Authorization role
-
----
+Pengembangan selanjutnya difokuskan pada implementasi password hashing, pengelolaan hak akses berdasarkan role (admin dan user), upload file surat, serta penyempurnaan keamanan dan validasi data.

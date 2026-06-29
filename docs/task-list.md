@@ -1,24 +1,24 @@
 # Task List & Development Roadmap - Takah API
 
-Dokumen ini digunakan untuk mencatat progress development dan roadmap pengembangan aplikasi Takah.
+Dokumen ini digunakan untuk mencatat progress pengembangan aplikasi Takah.
 
 ---
 
 # Current Development Phase
 
-Saat ini project masih berada pada tahap:
+Saat ini project berada pada tahap:
 
 ```text
-Planning & Basic Backend Development
+Backend Development & MySQL Integration
 ```
 
-Fokus utama:
+Fokus pengembangan saat ini:
 
-* Menyusun flow aplikasi
-* Menyusun dokumentasi sistem
-* Menyusun rancangan database
-* Mengembangkan REST API utama
-* Menyiapkan struktur backend project
+* Penyempurnaan struktur backend.
+* Integrasi seluruh endpoint dengan database MySQL.
+* Penyempurnaan fitur authentication.
+* Pengembangan fitur upload file surat.
+* Penyempurnaan validasi data dan arsitektur backend.
 
 ---
 
@@ -26,151 +26,151 @@ Fokus utama:
 
 ## 1. Backend Setup
 
-| Task                    | Status | Notes                   |
-| ----------------------- | ------ | ----------------------- |
-| Setup Golang project    | Done   | Project berjalan normal |
-| Install Gin Framework   | Done   | Framework backend       |
-| Setup route API         | Done   | Base route `/api/v1`    |
-| Setup project structure | Done   | cmd/internal/docs       |
+| Task                    | Status | Notes                    |
+| ----------------------- | ------ | ------------------------ |
+| Setup Golang Project    | Done   | Project berjalan normal  |
+| Install Gin Framework   | Done   | Framework backend        |
+| Setup Route API         | Done   | Base route `/api/v1`     |
+| Setup Project Structure | Done   | Struktur project selesai |
 
 ---
 
 ## 2. Authentication
 
-| Task               | Status | Notes                         |
-| ------------------ | ------ | ----------------------------- |
-| Dummy login API    | Done   | Login basic                   |
-| JWT authentication | Done   | JWT middleware sudah tersedia |
-| Password hashing   | Todo   | Planned                       |
-| Authorization role | Todo   | Admin/User role               |
+| Task               | Status  | Notes                              |
+| ------------------ | ------- | ---------------------------------- |
+| Login API          | Done    | Login berhasil                     |
+| JWT Authentication | Done    | Middleware tersedia                |
+| Password Hashing   | Partial | Belum menggunakan hashing password |
+| Authorization Role | Todo    | Belum diimplementasikan            |
 
 ---
 
 ## 3. Master Takah
 
-| Task                 | Status | Notes             |
-| -------------------- | ------ | ----------------- |
-| CRUD Master Takah    | Done   | Dummy data        |
-| Get all takah        | Done   | Endpoint tersedia |
-| Get takah by id      | Done   | Endpoint tersedia |
-| Create takah         | Done   | Endpoint tersedia |
-| Update takah         | Done   | Endpoint tersedia |
-| Delete takah         | Done   | Endpoint tersedia |
-| Database integration | Todo   | Planned           |
+| Task                   | Status | Notes                     |
+| ---------------------- | ------ | ------------------------- |
+| CRUD Master Takah      | Done   | Menggunakan MySQL         |
+| Get All Master Takah   | Done   | Endpoint tersedia         |
+| Get Master Takah By ID | Done   | Endpoint tersedia         |
+| Create Master Takah    | Done   | Endpoint tersedia         |
+| Update Master Takah    | Done   | Endpoint tersedia         |
+| Delete Master Takah    | Done   | Endpoint tersedia         |
+| Database Integration   | Done   | Terintegrasi dengan MySQL |
 
 ---
 
 ## 4. Surat Module
 
-| Task                 | Status  | Notes                           |
-| -------------------- | ------- | ------------------------------- |
-| CRUD Surat           | Done    | Dummy module                    |
-| Surat keluar         | Done    | CRUD surat keluar tersedia      |
-| Surat masuk          | Done    | CRUD surat masuk tersedia       |
-| Monitoring surat     | Done    | CRUD monitoring tersedia        |
-| Approval surat       | Done    | CRUD approval tersedia          |
-| Approval tracking    | Partial | Riwayat approval dasar tersedia |
-| Multi level approval | Todo    | Planned                         |
+| Task                  | Status | Notes                     |
+| --------------------- | ------ | ------------------------- |
+| CRUD Surat Keluar     | Done   | Menggunakan MySQL         |
+| CRUD Surat Masuk      | Done   | Menggunakan MySQL         |
+| CRUD Monitoring Surat | Done   | Menggunakan MySQL         |
+| Review Surat          | Done   | Endpoint tersedia         |
+| Approval Surat        | Done   | Endpoint tersedia         |
+| Approval History      | Done   | Riwayat approval tersedia |
+| Multi Level Approval  | Todo   | Belum diimplementasikan   |
 
 ---
 
 ## 5. Config Nomor Surat
 
-| Task                    | Status  | Notes                                       |
-| ----------------------- | ------- | ------------------------------------------- |
-| Generate nomor otomatis | Done    | Generate berdasarkan jenis surat            |
-| Reset nomor bulanan     | Partial | Struktur tersedia, belum terintegrasi penuh |
-| Config format nomor     | Done    | Relasi dengan Master Takah tersedia         |
+| Task                 | Status  | Notes                           |
+| -------------------- | ------- | ------------------------------- |
+| Generate Nomor Surat | Done    | Berdasarkan Master Takah        |
+| Config Format Nomor  | Done    | Relasi dengan Master Takah      |
+| Database Integration | Done    | Menggunakan MySQL               |
+| Reset Nomor Surat    | Partial | Logika reset masih dikembangkan |
 
 Contoh format:
 
 ```text
-001/UND/CBN/052026
+001/UND/CBN/062026
 ```
 
 ---
 
-## 6. Template Surat
+## 6. Parameter Surat
 
-| Task                | Status | Notes               |
-| ------------------- | ------ | ------------------- |
-| CRUD template surat | Done   | CRUD dummy tersedia |
-| Parameter surat     | Todo   | Planned             |
-| Dynamic template    | Todo   | Planned             |
-
----
-
-## 7. Database
-
-| Task              | Status | Notes                 |
-| ----------------- | ------ | --------------------- |
-| Database design   | Done   | Draft design tersedia |
-| MySQL integration | Todo   | Planned               |
-| SQL schema        | Todo   | Planned               |
-| Migration         | Todo   | Planned               |
-| Seeder dummy data | Todo   | Planned               |
+| Task                  | Status | Notes                         |
+| --------------------- | ------ | ----------------------------- |
+| CRUD Parameter Surat  | Done   | Menggunakan MySQL             |
+| Relasi Template Surat | Done   | Berdasarkan `template_id`     |
+| Validasi Template     | Done   | Template harus tersedia       |
+| Integrasi Template    | Done   | Digunakan pada Template Surat |
 
 ---
 
-## 8. Documentation
+## 7. Template Surat
+
+| Task                      | Status  | Notes                          |
+| ------------------------- | ------- | ------------------------------ |
+| CRUD Template Surat       | Done    | Menggunakan MySQL              |
+| Relasi Master Takah       | Done    | Sudah diterapkan               |
+| Integrasi Parameter Surat | Done    | Parameter berdasarkan template |
+| Dynamic Template          | Partial | Pengembangan lanjutan          |
+
+---
+
+## 8. Database
+
+| Task              | Status  | Notes                               |
+| ----------------- | ------- | ----------------------------------- |
+| Database Design   | Done    | Dokumentasi selesai                 |
+| Database Setup    | Done    | Database `takah_db` berhasil dibuat |
+| MySQL Integration | Done    | Seluruh endpoint menggunakan MySQL  |
+| SQL Schema        | Done    | Struktur tabel selesai              |
+| Migration         | Partial | Manual migration                    |
+| Seeder Dummy Data | Todo    | Belum dibuat                        |
+
+---
+
+## 9. Documentation
 
 | Task                      | Status | Notes     |
 | ------------------------- | ------ | --------- |
-| Flow system documentation | Done   | Completed |
-| Backend documentation     | Done   | Completed |
-| Database documentation    | Done   | Completed |
-| Integration documentation | Done   | Completed |
-| API testing documentation | Done   | Completed |
+| Flow System Documentation | Done   | Completed |
+| Backend Documentation     | Done   | Completed |
+| Database Documentation    | Done   | Completed |
+| Integration Documentation | Done   | Completed |
+| API Testing Documentation | Done   | Completed |
 | SOP Admin                 | Done   | Completed |
 | SOP User                  | Done   | Completed |
+| Task List Documentation   | Done   | Completed |
+## 10. API Testing
 
----
-
-## 9. API Testing
-
-| Task                       | Status | Notes                   |
-| -------------------------- | ------ | ----------------------- |
-| Health endpoint testing    | Done   | Success                 |
-| Login endpoint testing     | Done   | Success                 |
-| JWT middleware testing     | Done   | Success                 |
-| Master Takah testing       | Done   | Success                 |
-| Config Nomor Surat testing | Done   | Success                 |
-| Surat Keluar testing       | Done   | Success                 |
-| Surat Masuk testing        | Done   | Success                 |
-| Template Surat testing     | Done   | Success                 |
-| Approval Surat testing     | Done   | Success                 |
-| Monitoring Surat testing   | Done   | Success                 |
-| Database testing           | Todo   | Database belum tersedia |
-| Password Hashing Testing   | Todo   | Planned                 |
+| Task                       | Status  | Notes                              |
+| -------------------------- | ------- | ---------------------------------- |
+| Health Endpoint Testing    | Done    | Success                            |
+| Authentication Testing     | Done    | Success                            |
+| JWT Middleware Testing     | Done    | Success                            |
+| Master Takah Testing       | Done    | Success                            |
+| Config Nomor Surat Testing | Done    | Success                            |
+| Template Surat Testing     | Done    | Success                            |
+| Parameter Surat Testing    | Done    | Success                            |
+| Surat Keluar Testing       | Done    | Success                            |
+| Surat Masuk Testing        | Done    | Success                            |
+| Review & Approval Testing  | Done    | Success                            |
+| Monitoring Surat Testing   | Done    | Success                            |
+| Database CRUD Testing      | Done    | Seluruh endpoint menggunakan MySQL |
+| Password Hashing Testing   | Partial | Belum menggunakan hashing password |
 
 ---
 
 # Current Focus
 
-Prioritas development saat ini:
+Prioritas pengembangan saat ini:
 
-1. Finalisasi dokumentasi project
-2. Menyusun SQL schema
-3. Integrasi database MySQL
-4. Password hashing
-5. Authorization role admin dan user
-6. Integrasi seluruh module dengan database
-
----
-
-# Future Development
-
-Fitur pengembangan selanjutnya:
-
-* Dashboard monitoring
-* Export PDF
-* Upload file surat
-* Notification system
-* Audit log
-* Approval multi-level
-* Digital signature
-* Docker deployment
-* Swagger/OpenAPI documentation
+1. Implementasi Password Hashing.
+2. Implementasi Authorization Role.
+3. Pengembangan upload file surat.
+4. Penyempurnaan validasi input.
+5. Pengembangan Multi Level Approval.
+6. Implementasi Repository Layer.
+7. Implementasi Service Layer.
+8. Optimasi struktur backend.
+9. Penyempurnaan dokumentasi API.
 
 ---
 
@@ -179,7 +179,27 @@ Fitur pengembangan selanjutnya:
 Current status:
 
 ```text
-Project masih dalam tahap development awal dan masih menggunakan dummy data.
+Project telah menyelesaikan tahap pengembangan backend dasar, dokumentasi sistem, dan integrasi database MySQL.
 ```
 
-Backend REST API utama telah berhasil diimplementasikan, meliputi Authentication, Master Takah, Config Nomor Surat, Template Surat, Surat Keluar, Surat Masuk, Approval Surat, dan Monitoring Surat. Seluruh endpoint utama telah berhasil diuji menggunakan Postman. Tahap pengembangan berikutnya difokuskan pada integrasi database MySQL, password hashing, authorization role, serta penyempurnaan fitur lanjutan.
+Backend REST API utama telah berhasil diimplementasikan, meliputi:
+
+* Authentication
+* Master Takah
+* Config Nomor Surat
+* Template Surat
+* Parameter Surat
+* Surat Keluar
+* Surat Masuk
+* Review dan Approval Surat
+* Monitoring Surat
+
+Seluruh endpoint utama telah berhasil diuji menggunakan Postman dan telah terintegrasi dengan database MySQL sehingga proses CRUD dapat dilakukan langsung pada database.
+
+Tahap pengembangan berikutnya difokuskan pada implementasi password hashing, authorization role, upload file surat, penyempurnaan validasi data, pengembangan Multi Level Approval, serta penerapan Repository Layer dan Service Layer agar arsitektur backend menjadi lebih terstruktur dan mudah dikembangkan.
+
+---
+
+# Development Notes
+
+Dokumentasi ini diperbarui mengikuti perkembangan implementasi backend terbaru. Seluruh modul utama telah memiliki endpoint CRUD yang terhubung dengan database MySQL, sehingga dokumentasi ini dapat digunakan sebagai acuan untuk tahap pengembangan selanjutnya maupun proses maintenance aplikasi Takah API.

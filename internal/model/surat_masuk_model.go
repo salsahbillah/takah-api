@@ -11,15 +11,16 @@ type SuratMasukRequest struct {
 }
 
 type SuratMasukResponse struct {
-	ID           int    `json:"id"`
-	NomorSurat  string `json:"nomor_surat"`
-	Pengirim    string `json:"pengirim"`
-	Penerima    string `json:"penerima"`
-	Perihal     string `json:"perihal"`
-	FileSurat   string `json:"file_surat"`
+	ID            int    `json:"id"`
+	NomorSurat   string `json:"nomor_surat"`
+	Pengirim     string `json:"pengirim"`
+	Penerima     string `json:"penerima"`
+	Perihal      string `json:"perihal"`
+	FileSurat    string `json:"file_surat"`
 	TanggalSurat string `json:"tanggal_surat"`
-	Keterangan  string `json:"keterangan"`
-	Status      string `json:"status"`
-	CreatedBy   string `json:"created_by"`
-	CreatedAt   string `json:"created_at"`
+	Keterangan   string `json:"keterangan"`
+	Status       string `json:"status"`
+	CreatedBy    string `json:"created_by"`
+	CreatedAt    string `json:"created_at"`
+	UpdatedAt    string `json:"updated_at"`
 }
