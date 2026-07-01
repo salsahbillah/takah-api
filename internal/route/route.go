@@ -22,6 +22,8 @@ func SetupRoutes(router *gin.Engine) {
 	protected := api.Group("")
 	protected.Use(middleware.AuthMiddleware())
 
+	protected.GET("/dashboard", handler.GetDashboard)
+
 	surat := protected.Group("/surat")
 	surat.GET("", handler.GetAllSurat)
 	surat.POST("", handler.CreateSurat)
