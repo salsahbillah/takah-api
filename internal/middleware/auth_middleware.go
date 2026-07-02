@@ -45,10 +45,23 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		c.Set("user_id", int(claims["id"].(float64)))
-		c.Set("user_name", claims["name"].(string))
-		c.Set("user_email", claims["email"].(string))
-		c.Set("user_role", claims["role"].(string))
+		userID, ok := claims["id"].(float64)
+		if !ok {
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"message": "Token tidak valid",
+			})
+			c.Abort()
+			return
+		}
+
+		userName, _ := claims["name"].(string)
+		userEmail, _ := claims["email"].(string)
+		userRole, _ := claims["role"].(string)
+
+		c.Set("user_id", int(userID))
+		c.Set("user_name", userName)
+		c.Set("user_email", userEmail)
+		c.Set("user_role", userRole)
 
 		c.Next()
 	}
