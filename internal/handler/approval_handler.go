@@ -263,17 +263,15 @@ func CreateApproval(c *gin.Context) {
 	})
 }
 
+
 func UpdateApproval(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "ID approval tidak valid",
-		})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "ID approval tidak valid"})
 		return
 	}
 
 	var request model.ApprovalRequest
-
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "Data approval wajib diisi dengan benar",
@@ -296,10 +294,7 @@ func UpdateApproval(c *gin.Context) {
 
 	tx, err := database.DB.Begin()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Gagal memulai transaksi approval",
-			"error":   err.Error(),
-		})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Gagal memulai transaksi approval", "error": err.Error()})
 		return
 	}
 	defer tx.Rollback()
@@ -315,9 +310,7 @@ func UpdateApproval(c *gin.Context) {
 	`, id).Scan(&suratKeluarID, &nomorSurat)
 
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{
-			"message": "Data approval tidak ditemukan",
-		})
+		c.JSON(http.StatusNotFound, gin.H{"message": "Data approval tidak ditemukan"})
 		return
 	}
 
@@ -348,10 +341,7 @@ func UpdateApproval(c *gin.Context) {
 	)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Gagal mengupdate data approval",
-			"error":   err.Error(),
-		})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Gagal mengupdate data approval", "error": err.Error()})
 		return
 	}
 
@@ -370,18 +360,24 @@ func UpdateApproval(c *gin.Context) {
 	`, suratStatus, suratKeluarID)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Gagal mengupdate status surat keluar",
-			"error":   err.Error(),
-		})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Gagal mengupdate status surat keluar", "error": err.Error()})
+		return
+	}
+
+	_, err = tx.Exec(`
+		INSERT INTO monitoring_surat
+			(surat_keluar_id, nomor_surat, status, last_approver, last_notes, updated_by)
+		VALUES
+			(?, ?, ?, ?, ?, ?)
+	`, suratKeluarID, nomorSurat, suratStatus, request.ApproverName, request.Notes, request.ApproverID)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Gagal membuat data monitoring", "error": err.Error()})
 		return
 	}
 
 	if err := tx.Commit(); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Gagal menyimpan transaksi approval",
-			"error":   err.Error(),
-		})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Gagal menyimpan transaksi approval", "error": err.Error()})
 		return
 	}
 
@@ -390,20 +386,18 @@ func UpdateApproval(c *gin.Context) {
 		approvedAtString = approvedAt.Time.Format("2006-01-02 15:04:05")
 	}
 
-	response := model.ApprovalResponse{
-		ID:             id,
-		SuratKeluarID:  suratKeluarID,
-		NomorSurat:     nomorSurat,
-		ApproverID:     request.ApproverID,
-		ApproverName:   request.ApproverName,
-		ApprovalStatus: status,
-		Notes:          request.Notes,
-		ApprovedAt:     approvedAtString,
-		CreatedAt:      time.Now().Format("2006-01-02 15:04:05"),
-	}
-
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Approval surat berhasil diupdate",
-		"data":    response,
+		"data": model.ApprovalResponse{
+			ID:             id,
+			SuratKeluarID:  suratKeluarID,
+			NomorSurat:     nomorSurat,
+			ApproverID:     request.ApproverID,
+			ApproverName:   request.ApproverName,
+			ApprovalStatus: status,
+			Notes:          request.Notes,
+			ApprovedAt:     approvedAtString,
+			CreatedAt:      time.Now().Format("2006-01-02 15:04:05"),
+		},
 	})
 }

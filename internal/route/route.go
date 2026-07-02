@@ -56,6 +56,7 @@ func SetupRoutes(router *gin.Engine) {
 	suratKeluar := protected.Group("/surat-keluar")
 	suratKeluar.GET("", handler.GetAllSuratKeluar)
 	suratKeluar.POST("", handler.CreateSuratKeluar)
+	suratKeluar.PUT("/:id/submit-approval", handler.SubmitSuratKeluarApproval)
 	suratKeluar.GET("/:id", handler.GetSuratKeluarByID)
 	suratKeluar.PUT("/:id", handler.UpdateSuratKeluar)
 	suratKeluar.DELETE("/:id", handler.DeleteSuratKeluar)
