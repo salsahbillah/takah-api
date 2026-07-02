@@ -8,6 +8,8 @@ import (
 )
 
 func SetupRoutes(router *gin.Engine) {
+	router.Static("/uploads", "./uploads")
+
 	api := router.Group("/api/v1")
 
 	api.GET("/health", func(c *gin.Context) {
@@ -21,7 +23,14 @@ func SetupRoutes(router *gin.Engine) {
 
 	protected := api.Group("")
 	protected.Use(middleware.AuthMiddleware())
+
 	protected.GET("/dashboard", handler.GetDashboard)
+
+	profile := protected.Group("/profile")
+	profile.GET("", handler.GetProfile)
+	profile.PUT("", handler.UpdateProfile)
+	profile.PUT("/password", handler.UpdatePassword)
+	profile.POST("/photo", handler.UploadProfilePhoto)
 
 	surat := protected.Group("/surat")
 	surat.GET("", handler.GetAllSurat)
