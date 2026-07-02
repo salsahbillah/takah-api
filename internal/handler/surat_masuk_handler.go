@@ -2,8 +2,12 @@ package handler
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	"takah-api/internal/database"
@@ -11,6 +15,45 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
+
+func isAllowedSuratMasukFile(filename string) bool {
+	ext := strings.ToLower(filepath.Ext(filename))
+
+	allowedExtensions := map[string]bool{
+		".pdf":  true,
+		".doc":  true,
+		".docx": true,
+	}
+
+	return allowedExtensions[ext]
+}
+
+func saveSuratMasukFile(c *gin.Context, fieldName string) (string, error) {
+	file, err := c.FormFile(fieldName)
+	if err != nil {
+		return "", nil
+	}
+
+	if !isAllowedSuratMasukFile(file.Filename) {
+		return "", fmt.Errorf("file harus berformat PDF, DOC, atau DOCX")
+	}
+
+	uploadDir := "uploads/surat-masuk"
+
+	if err := os.MkdirAll(uploadDir, os.ModePerm); err != nil {
+		return "", err
+	}
+
+	ext := filepath.Ext(file.Filename)
+	fileName := fmt.Sprintf("surat_masuk_%d%s", time.Now().UnixNano(), ext)
+	filePath := filepath.Join(uploadDir, fileName)
+
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
+		return "", err
+	}
+
+	return "/" + filepath.ToSlash(filePath), nil
+}
 
 func GetAllSuratMasuk(c *gin.Context) {
 	rows, err := database.DB.Query(`
@@ -135,11 +178,27 @@ func GetSuratMasukByID(c *gin.Context) {
 }
 
 func CreateSuratMasuk(c *gin.Context) {
-	var request model.SuratMasukRequest
+	nomorSurat := c.PostForm("nomor_surat")
+	pengirim := c.PostForm("pengirim")
+	penerima := c.PostForm("penerima")
+	perihal := c.PostForm("perihal")
+	tanggalSurat := c.PostForm("tanggal_surat")
+	keterangan := c.PostForm("keterangan")
 
-	if err := c.ShouldBindJSON(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "Data surat masuk wajib diisi dengan benar", "error": err.Error()})
+	if nomorSurat == "" || pengirim == "" || penerima == "" || perihal == "" || tanggalSurat == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Nomor surat, pengirim, penerima, perihal, dan tanggal surat wajib diisi"})
 		return
+	}
+
+	fileSurat, err := saveSuratMasukFile(c, "file_surat")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+
+	createdBy := c.GetInt("user_id")
+	if createdBy == 0 {
+		createdBy = 1
 	}
 
 	result, err := database.DB.Exec(`
@@ -148,15 +207,15 @@ func CreateSuratMasuk(c *gin.Context) {
 		VALUES
 			(?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`,
-		request.NomorSurat,
-		request.Pengirim,
-		request.Penerima,
-		request.Perihal,
-		request.FileSurat,
-		request.TanggalSurat,
-		request.Keterangan,
+		nomorSurat,
+		pengirim,
+		penerima,
+		perihal,
+		fileSurat,
+		tanggalSurat,
+		keterangan,
 		"received",
-		1,
+		createdBy,
 	)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Gagal membuat data surat masuk", "error": err.Error()})
@@ -171,15 +230,15 @@ func CreateSuratMasuk(c *gin.Context) {
 
 	response := model.SuratMasukResponse{
 		ID:            int(id),
-		NomorSurat:   request.NomorSurat,
-		Pengirim:     request.Pengirim,
-		Penerima:     request.Penerima,
-		Perihal:      request.Perihal,
-		FileSurat:    request.FileSurat,
-		TanggalSurat: request.TanggalSurat,
-		Keterangan:   request.Keterangan,
+		NomorSurat:   nomorSurat,
+		Pengirim:     pengirim,
+		Penerima:     penerima,
+		Perihal:      perihal,
+		FileSurat:    fileSurat,
+		TanggalSurat: tanggalSurat,
+		Keterangan:   keterangan,
 		Status:       "received",
-		CreatedBy:    "1",
+		CreatedBy:    strconv.Itoa(createdBy),
 		CreatedAt:    time.Now().Format("2006-01-02 15:04:05"),
 		UpdatedAt:    time.Now().Format("2006-01-02 15:04:05"),
 	}
@@ -197,11 +256,44 @@ func UpdateSuratMasuk(c *gin.Context) {
 		return
 	}
 
-	var request model.SuratMasukRequest
+	nomorSurat := c.PostForm("nomor_surat")
+	pengirim := c.PostForm("pengirim")
+	penerima := c.PostForm("penerima")
+	perihal := c.PostForm("perihal")
+	tanggalSurat := c.PostForm("tanggal_surat")
+	keterangan := c.PostForm("keterangan")
 
-	if err := c.ShouldBindJSON(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "Data surat masuk wajib diisi dengan benar", "error": err.Error()})
+	if nomorSurat == "" || pengirim == "" || penerima == "" || perihal == "" || tanggalSurat == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Nomor surat, pengirim, penerima, perihal, dan tanggal surat wajib diisi"})
 		return
+	}
+
+	var oldFileSurat sql.NullString
+
+	err = database.DB.QueryRow(`
+		SELECT file_surat
+		FROM surat_masuk
+		WHERE id = ?
+	`, id).Scan(&oldFileSurat)
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"message": "Data surat masuk tidak ditemukan"})
+		return
+	}
+
+	fileSurat := ""
+	if oldFileSurat.Valid {
+		fileSurat = oldFileSurat.String
+	}
+
+	newFileSurat, err := saveSuratMasukFile(c, "file_surat")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+
+	if newFileSurat != "" {
+		fileSurat = newFileSurat
 	}
 
 	result, err := database.DB.Exec(`
@@ -216,13 +308,13 @@ func UpdateSuratMasuk(c *gin.Context) {
 			keterangan = ?
 		WHERE id = ?
 	`,
-		request.NomorSurat,
-		request.Pengirim,
-		request.Penerima,
-		request.Perihal,
-		request.FileSurat,
-		request.TanggalSurat,
-		request.Keterangan,
+		nomorSurat,
+		pengirim,
+		penerima,
+		perihal,
+		fileSurat,
+		tanggalSurat,
+		keterangan,
 		id,
 	)
 	if err != nil {
@@ -238,15 +330,14 @@ func UpdateSuratMasuk(c *gin.Context) {
 
 	response := model.SuratMasukResponse{
 		ID:            id,
-		NomorSurat:   request.NomorSurat,
-		Pengirim:     request.Pengirim,
-		Penerima:     request.Penerima,
-		Perihal:      request.Perihal,
-		FileSurat:    request.FileSurat,
-		TanggalSurat: request.TanggalSurat,
-		Keterangan:   request.Keterangan,
+		NomorSurat:   nomorSurat,
+		Pengirim:     pengirim,
+		Penerima:     penerima,
+		Perihal:      perihal,
+		FileSurat:    fileSurat,
+		TanggalSurat: tanggalSurat,
+		Keterangan:   keterangan,
 		Status:       "received",
-		CreatedBy:    "1",
 		UpdatedAt:    time.Now().Format("2006-01-02 15:04:05"),
 	}
 
